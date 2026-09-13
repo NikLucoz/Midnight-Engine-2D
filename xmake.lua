@@ -40,15 +40,8 @@ end
 -- Copy assets post-build
 
 after_build(function (target)
-    local src_assets = path.join(target:scriptdir(), "game/assets/*")
-    local dst_assets = path.join(target:targetdir(), "game/assets/")
+    local src_assets = path.join(target:scriptdir(), "src/example_game/game_data/**")
+    local dst_assets = path.join(target:targetdir(), "game/")
     os.cp(src_assets, dst_assets)
-
-    local src_levels = path.join(target:scriptdir(), "game/levels")
-    local dst_game = path.join(target:targetdir(), "game")
-    os.cp(src_levels, dst_game)
-
-    local src_config = path.join(target:scriptdir(), "game/config")
-    os.cp(src_config, dst_game)
 end)
 
