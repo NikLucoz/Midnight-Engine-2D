@@ -1,19 +1,12 @@
 #pragma once
-#include <memory>
+#include <any>
 #include <string>
-#include <tuple>
-
-#include "engine/components/collision/CBoundingBox.h"
-#include "engine/components/collision/CCircleCollider.h"
-#include "engine/components/gameplay/CInput.h"
-#include "engine/components/gameplay/CLifespan.h"
+#include <typeindex>
+#include <unordered_map>
 #include "engine/components/rendering/CRenderable.h"
-#include "engine/components/rendering/CShape.h"
-#include "engine/components/gameplay/CSpecialBullet.h"
-#include "engine/components/rendering/CSprite.h"
-#include "engine/components/CTransform.h"
-#include "engine/components/rendering/CAnimatedSprite.h"
 
+
+/*
 using ComponentTuple = std::tuple<
     CTransform,
     CRenderable,
@@ -26,11 +19,14 @@ using ComponentTuple = std::tuple<
     CBoundingBox,
     CAnimatedSprite
 >;
+*/
+
+using ComponentMap = std::unordered_map<std::type_index, std::any>;
 
 class Entity
 {
 private:
-    ComponentTuple components_;
+    ComponentMap components_;
     bool bIsMarkedForDestruction_ = false;
     std::string tag_ = "default";
     std::string name_ = "entity";
@@ -47,22 +43,30 @@ public:
     template <typename T>
     T& getComponent()
     {
-        return std::get<T>(components_);
+        return std::any_cast<T&>(components_.at(typeid(T)));
     }
 
     template <typename T>
-    bool hasComponent()
+    const T& getComponent() const
     {
-        return getComponent<T>().exists;
+        return std::any_cast<const T&>(components_.at(typeid(T)));
     }
 
-    template <typename T, typename... TArgs>
-    T& addComponent(TArgs&&... mArgs)
+    template <typename T>
+    bool hasComponent() const
     {
-        auto& component = getComponent<T>();
-        component = T(std::forward<TArgs>(mArgs)...);
-        component.exists = true;
-        return component;
+        return components_.find(typeid(T)) != components_.end();
+    }
+
+    template <typename T, typename... Args>
+    T& addComponent(Args&&... args)
+    {
+        auto [iterator, inserted] = components_.insert_or_assign(
+            typeid(T),
+            T(std::forward<Args>(args)...)
+        );
+
+        return std::any_cast<T&>(iterator->second);
     }
 
     template <typename T, typename... TArgs>
@@ -75,8 +79,7 @@ public:
     template <typename T>
     void removeComponent()
     {
-        getComponent<T>() = T();
-        getComponent<T>().exists = false;
+        components_.erase(typeid(T));
     }
 
     size_t getId() const;

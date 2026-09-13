@@ -1,5 +1,9 @@
 #pragma once
-#include "Entity.h"
+#include "engine/components/CTransform.h"
+#include "engine/components/collision/CBoundingBox.h"
+#include "engine/components/rendering/CShape.h"
+#include "engine/entities/Entity.h"
+#include "example_game/components/CInput.h"
 
 class EPlayer : public Entity
 {

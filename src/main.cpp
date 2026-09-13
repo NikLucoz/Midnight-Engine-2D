@@ -1,8 +1,8 @@
 #include <iostream>
 #include "engine/GameEngine.h"
 #include "engine/utils/assets/GameConfigLoader.h"
-#include "engine/scenes/menu/MainMenuScene.h"
-#include "engine/scenes/Gameplay/ScenePlay.h"
+#include "example_game/scenes/menu/MainMenuScene.h"
+#include "example_game/scenes/Gameplay/ScenePlay.h"
 
 int main() {
     try {

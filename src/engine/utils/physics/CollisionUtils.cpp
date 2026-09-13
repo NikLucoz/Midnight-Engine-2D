@@ -1,5 +1,7 @@
 ﻿#include "CollisionUtils.h"
 #include "engine/entities/Entity.h"
+#include "engine/components/CTransform.h"
+#include "engine/components/collision/CBoundingBox.h"
 
 static Vector2<int> GetTopLeft(Entity* entity)
 {

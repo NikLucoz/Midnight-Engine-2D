@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "engine/scenes/Scene.h"
 #include "engine/GameEngine.h"
-#include "engine/entities/EPlayer.h"
+#include "example_game/entities/EPlayer.h"
 #include "engine/assets/tilemap/Tilemap.h"
 
 class ScenePlay : public Scene

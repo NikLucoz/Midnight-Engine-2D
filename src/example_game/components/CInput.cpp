@@ -1,4 +1,4 @@
-#include "engine/components/gameplay/CInput.h"
+#include "CInput.h"
 
 bool CInput::hasMovementInput() const
 {

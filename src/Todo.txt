@@ -2,11 +2,8 @@
     Core Engine - Refactor scene logic into reusable systems
     Core Engine - Add a reliable game loop with fixed timestep support
     Core Engine - Add pause, time scaling, and delta-time handling
-    Rendering - Create a dedicated render system
-    Rendering - Add render layers
     Rendering - Add sprite flipping and origin configuration
-    Rendering - Add renderable visibility and layer masks
-    Components - Add a reusable render component
+    Rendering - Add layer masks
 
 Core Engine
     Improve scene/component ownership and cleanup

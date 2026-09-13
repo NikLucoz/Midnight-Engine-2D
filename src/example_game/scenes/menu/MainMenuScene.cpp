@@ -3,7 +3,7 @@
 #include <iostream>
 #include "SFML/Graphics/Color.hpp"
 #include "engine/actions/Action.h"
-#include "engine/scenes/Gameplay/ScenePlay.h"
+#include "example_game/scenes/Gameplay/ScenePlay.h"
 #include "engine/components/rendering/CSprite.h"
 #include "engine/components/CTransform.h"
 #include "engine/entities/EntityManager.h"
@@ -37,8 +37,16 @@ void MainMenuScene::update(float dt)
 
 void MainMenuScene::sRender(float dt)
 {
+    if (!gameEngine_->getDebugOptions().systems.render) return;
+
+    RenderContext context{
+    gameEngine_->getWindow(),
+    gameEngine_->getAssets(),
+    gameEngine_->getDebugOptions()
+    };
+
     gameEngine_->getWindow().setView(gameEngine_->getWindow().getDefaultView());
-    defaultEntityRender(dt);
+    renderingSystem_->renderEntities(dt, context);
 }
 
 void MainMenuScene::sDebug()

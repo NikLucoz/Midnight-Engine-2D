@@ -1,12 +1,13 @@
 ﻿#include "ScenePlay.h"
 
-#include <iostream>
 #include <imgui.h>
 #include <SFML/Graphics.hpp>
-#include <SFML/Graphics.hpp>
 #include "engine/actions/Action.h"
+#include "engine/components/collision/CCircleCollider.h"
 #include "engine/entities/EntityManager.h"
-#include "engine/entities/EPlayer.h"
+#include "example_game/entities/EPlayer.h"
+#include "example_game/components/CLifespan.h"
+#include "example_game/components/CSpecialBullet.h"
 #include "engine/utils/physics/CollisionUtils.h"
 #include <engine/utils/assets/TileMapLoader.h>
 #include <engine/utils/physics/Raycast2D.h>
@@ -67,19 +68,31 @@ void ScenePlay::update(float dt)
     sEnemySpawner(dt);
     sAnimation(dt);
 
+    /*
     auto hit = Raycast2D::castRay(
         player_->getComponent<CTransform>().getPosition(),
         Vec2f::RIGHT(),
         100.0f,
         player_.get()
     );
+    */
 }
 
 void ScenePlay::sRender(float dt)
-{
+{   
+    
     if (!gameEngine_->getDebugOptions().systems.render) return;
-    tilemap_.drawLayer(gameEngine_->getWindow(), gameEngine_->getAssets(), tilemap_.getLayer("ground"));
-    defaultEntityRender(dt);
+    
+    RenderContext context{
+    gameEngine_->getWindow(),
+    gameEngine_->getAssets(),
+    gameEngine_->getDebugOptions()
+    };
+    
+    renderingSystem_->renderTilemapLayer(context, tilemap_, "ground");
+    renderingSystem_->renderEntities(dt, context);
+    
+    if (gameEngine_->getDebugOptions().showCollisionGeometry) sDebug();
 }
 
 void ScenePlay::sDoAction(const Action& action)

@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "engine/rendering/RenderingSystem.h"
 #include <map>
 #include <string>
 
@@ -36,6 +37,8 @@ class Scene
     bool bHasEnded_ = false;
     protected:
     GameEngine* gameEngine_ = nullptr;
+    std::unique_ptr<IRenderingSystem> renderingSystem_;
+
 public:
     explicit Scene(GameEngine* gameEngine);
     virtual void init() = 0;

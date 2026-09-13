@@ -6,6 +6,8 @@
 #include <SFML/Graphics/Sprite.hpp>
 
 #include "engine/assets/Assets.h"
+#include "engine/assets/tilemap/Tilemap.h"
+#include "engine/utils/math/Vector2.h"
 
 TileMap::TileMap(int tileWidth, int tileHeight, int width, int height) : tileWidth_(tileWidth), tileHeight_(tileHeight), width_(width), height_(height)
 {
@@ -86,11 +88,16 @@ void TileMap::setTile(const std::string& layerName, int column, int row, int til
     layer.tiles[static_cast<std::size_t>(row * width_ + column)] = tileId;
 }
 
+
+Vector2<int> TileMap::getOrigin() { return {originX_, originY_}; }
 int TileMap::getTileWidth() const { return tileWidth_; }
 int TileMap::getTileHeight() const { return tileHeight_; }
 int TileMap::getWidth() const { return width_; }
 int TileMap::getHeight() const { return height_; }
+TileDefinitions TileMap::getTileDefinitions() { return tileDefinitions_; }
 const std::vector<TileLayer>& TileMap::getLayers() const { return layers_; }
+
+
 
 void TileMap::drawLayer(sf::RenderWindow& window, Assets& assets, TileLayer& layer) const
 {
