@@ -10,18 +10,27 @@
 #include "engine/actions/Action.h"
 #include "engine/utils/assets/AssetsLoader.h"
 
-GameEngine::GameEngine()
-    : GameEngine(800, 600, "Game Engine")
+GameEngine::GameEngine() : GameEngine(GameConfig{})
 {
 }
 
 GameEngine::GameEngine(unsigned int width, unsigned int height, const std::string& title)
-    : window_(sf::VideoMode({width, height}), title), bIsRunning_(false), assets_(std::make_unique<Assets>()), scenes_(), baseViewSize_(800.0f, 600.0f)
+    : GameEngine(GameConfig{width, height, title, Vec2f(1280.0f, 720.0f), 60, true})
 {
-    window_.setFramerateLimit(60);
-    setBaseViewSize(Vec2f(width, height));
-    std::cout << "Engine initialized: " << width << "x" << height << std::endl;
+}
+
+GameEngine::GameEngine(const GameConfig& config)
+    : window_(sf::VideoMode({config.windowWidth, config.windowHeight}), config.windowTitle),
+      bIsRunning_(false),
+      assets_(std::make_unique<Assets>()),
+      scenes_(),
+      baseViewSize_(config.logicalViewSize),
+      letterbox_(config.letterbox)
+{
+    window_.setFramerateLimit(config.framerateLimit);
+    std::cout << "Engine initialized: " << config.windowWidth << "x" << config.windowHeight << std::endl;
     camera_ = std::make_unique<Camera>(baseViewSize_, Vec2f(500, 500));
+    handleResize(config.windowWidth, config.windowHeight);
 }
 
 void GameEngine::init()
@@ -109,15 +118,11 @@ void GameEngine::handleEvents()
         if (event->is<sf::Event::Closed>()) {
             quit();
         }
-
+        
         if (const auto* resized = event->getIf<sf::Event::Resized>()) {
-            if (resized->size.y > 0) {
-                float scaleX = resized->size.x / baseViewSize_.x;
-                float scaleY = resized->size.y / baseViewSize_.y;
-                float scale = std::min(scaleX, scaleY);
-                camera_->setViewSize(Vec2f(baseViewSize_.x * scale, baseViewSize_.y * scale));
-            }
+           handleResize(resized->size.x, resized->size.y);
         }
+
         
         if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
             if (keyPressed->code == sf::Keyboard::Key::F3 || !debugUI_.WantsKeyboardInput()) {
@@ -133,13 +138,13 @@ void GameEngine::handleEvents()
         
         if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()) {
             if (!debugUI_.WantsMouseInput()) {
-                handleUserMouseInputEvent(mouseButtonPressed->button, "pressed");
+                handleUserMouseInputEvent(mouseButtonPressed->button, "pressed", Vector2<int>(mouseButtonPressed->position.x, mouseButtonPressed->position.y));
             }
         }
         
         if (const auto* mouseButtonReleased = event->getIf<sf::Event::MouseButtonReleased>()) {
             if (!debugUI_.WantsMouseInput()) {
-                handleUserMouseInputEvent(mouseButtonReleased->button, "released");
+                handleUserMouseInputEvent(mouseButtonReleased->button, "released", Vector2<int>(mouseButtonReleased->position.x, mouseButtonReleased->position.y));
             }
         }
     }
@@ -160,7 +165,7 @@ void GameEngine::handleUserKeyboardInputEvent(sf::Keyboard::Key keyCode, const s
     getCurrentScene()->doAction(Action(action->second, actionType));
 }
 
-void GameEngine::handleUserMouseInputEvent(sf::Mouse::Button button, const std::string& actionType) {
+void GameEngine::handleUserMouseInputEvent(sf::Mouse::Button button, const std::string& actionType, const Vector2<int> pos) {
     const InputBinding binding {
         InputDevice::MouseButton,
         static_cast<int>(button)
@@ -172,7 +177,7 @@ void GameEngine::handleUserMouseInputEvent(sf::Mouse::Button button, const std::
     if (action == actionMap.end())
         return;
 
-    getCurrentScene()->doAction(Action(action->second, actionType));
+    getCurrentScene()->doAction(Action(action->second, actionType, pos));
 }
 
 void GameEngine::changeScene(const std::string& sceneName)
@@ -221,9 +226,36 @@ std::vector<std::string> GameEngine::getSceneNames() const
     return names;
 }
 
-void GameEngine::sUserInput()
+void GameEngine::handleResize(unsigned int width, unsigned int height)
 {
+    if (height == 0)
+        return;
+
+    if (!letterbox_) {
+        camera_->setViewport(sf::FloatRect({0.0f, 0.0f}, {1.0f, 1.0f}));
+        return;
+    }
     
+    const sf::Vector2f logicalViewSize = camera_->getViewSize();
+    const float targetAspect = logicalViewSize.x / logicalViewSize.y;
+
+    const float windowAspect =
+        static_cast<float>(width) / static_cast<float>(height);
+
+    sf::FloatRect viewport({0.0f, 0.0f}, {1.0f, 1.0f});
+
+    if (windowAspect > targetAspect) {
+        // Window is wider than 16:9 add left/right bars.
+        viewport.size.x = targetAspect / windowAspect;
+        viewport.position.x = (1.0f - viewport.size.x) * 0.5f;
+    }
+    else if (windowAspect < targetAspect) {
+        // Window is taller than 16:9 add top/bottom bars.
+        viewport.size.y = windowAspect / targetAspect;
+        viewport.position.y = (1.0f - viewport.size.y) * 0.5f;
+    }
+
+    camera_->setViewport(viewport);
 }
 
 void GameEngine::drawTestGrid(sf::RenderWindow& window) {

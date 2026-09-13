@@ -3,8 +3,8 @@
 #include <iostream>
 #include "SFML/Graphics/Color.hpp"
 #include "engine/actions/Action.h"
-#include "ScenePlay.h"
-#include "engine/components/CSprite.h"
+#include "engine/scenes/Gameplay/ScenePlay.h"
+#include "engine/components/rendering/CSprite.h"
 #include "engine/components/CTransform.h"
 #include "engine/entities/EntityManager.h"
 #include "engine/utils/math/Vector2.h"
@@ -20,11 +20,15 @@ void MainMenuScene::init()
 {
     const auto& card = EntityManager::getInstance().addEntity("card", gameEngine_->getCurrentSceneName(), "Fireball Card");
     card->addComponent<CTransform>(Vec2f(100, 100), Vec2f(0,0), 0, Vec2f(1,1));
-    card->addComponent<CSprite>(gameEngine_->getAssets().getTexture("fireballCardTexture"), Vec2f(200, 400), Vec2f(0,0), Vec2f(1,1));
+    card->addRenderable<CSprite>(gameEngine_->getAssets().getTexture("fireballCardTexture"), Vec2f(200, 400), Vec2f(0,0));
 }
 
 void MainMenuScene::destroy()
 {
+    for (auto& ePtr : EntityManager::getInstance().getEntitiesInScene(gameEngine_->getCurrentSceneName())) {
+        Entity& e = *ePtr;
+        e.destroy();
+    }
 }
 
 void MainMenuScene::update(float dt)

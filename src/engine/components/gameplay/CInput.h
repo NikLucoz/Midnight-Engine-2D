@@ -1,5 +1,5 @@
 #pragma once
-#include "Component.h"
+#include "engine/components/Component.h"
 #include "engine/utils/math/Vector2.h"
 
 class CInput : public Component

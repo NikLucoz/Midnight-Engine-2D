@@ -14,6 +14,7 @@ public:
     sf::Color outlineColor_;
     uint16_t outlineThickness_;
     CShape() = default;
-    CShape(float radius, int8_t point_count, sf::Color fillColor, sf::Color OutlineColor, uint16_t OutlineThickness);
+    CShape(float radius, int8_t point_count, sf::Color fillColor, sf::Color OutlineColor,
+           uint16_t OutlineThickness);
     sf::CircleShape* getShape();
 };

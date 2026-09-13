@@ -132,9 +132,9 @@ target_sources(game_engine PRIVATE
     src/main.cpp
     src/engine/entities/Entity.cpp
     src/engine/entities/EntityManager.cpp
-    src/engine/components/CSprite.cpp
-    src/engine/components/CShape.cpp
-    src/engine/components/CInput.cpp
+    src/engine/components/rendering/CSprite.cpp
+    src/engine/components/rendering/CShape.cpp
+    src/engine/components/gameplay/CInput.cpp
     src/engine/utils/math/Vector2.cpp
     src/engine/utils/debug_ui/DebugUI.cpp
     src/engine/GameEngine.cpp

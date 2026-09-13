@@ -47,5 +47,8 @@ after_build(function (target)
     local src_levels = path.join(target:scriptdir(), "game/levels")
     local dst_game = path.join(target:targetdir(), "game")
     os.cp(src_levels, dst_game)
+
+    local src_config = path.join(target:scriptdir(), "game/config")
+    os.cp(src_config, dst_game)
 end)
 

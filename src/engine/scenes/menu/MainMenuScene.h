@@ -1,5 +1,5 @@
 #pragma once
-#include "Scene.h"
+#include "engine/scenes/scene.h"
 
 class Action;
 

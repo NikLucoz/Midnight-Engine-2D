@@ -1,11 +1,13 @@
 #include <iostream>
 #include "engine/GameEngine.h"
-#include "engine/scenes/MainMenuScene.h"
-#include "engine/scenes/ScenePlay.h"
+#include "engine/utils/assets/GameConfigLoader.h"
+#include "engine/scenes/menu/MainMenuScene.h"
+#include "engine/scenes/Gameplay/ScenePlay.h"
 
 int main() {
     try {
-        GameEngine game_engine(1280, 720, "Game Engine");
+        const GameConfig config = GameConfigLoader::load("game/config/game.cfg");
+        GameEngine game_engine(config);
         game_engine.init();
         game_engine.registerScene<MainMenuScene>("main_menu_scene");
         game_engine.registerScene<ScenePlay>("gameplay_scene", 1.0f);

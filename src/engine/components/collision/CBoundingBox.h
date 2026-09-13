@@ -1,5 +1,5 @@
-﻿#pragma once
-#include "Component.h"
+#pragma once
+#include "engine/components/Component.h"
 #include "engine/utils/math/Vector2.h"
 
 class CBoundingBox : public Component

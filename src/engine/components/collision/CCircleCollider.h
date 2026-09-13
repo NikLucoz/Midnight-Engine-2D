@@ -1,5 +1,5 @@
 #pragma once
-#include "Component.h"
+#include "engine/components/Component.h"
 
 class CCircleCollider : public Component
 {

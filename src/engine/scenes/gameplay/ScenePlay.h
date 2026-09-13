@@ -1,7 +1,6 @@
 ﻿#pragma once
-#include "Scene.h"
+#include "engine/scenes/Scene.h"
 #include "engine/GameEngine.h"
-#include "engine/entities/EntityManager.h"
 #include "engine/entities/EPlayer.h"
 #include "engine/assets/tilemap/Tilemap.h"
 

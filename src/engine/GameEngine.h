@@ -10,6 +10,7 @@
 #include "engine/camera/Camera.h"
 #include "engine/utils/debug_ui/DebugUI.h"
 #include "engine/utils/math/Vector2.h"
+#include "engine/utils/assets/GameConfigLoader.h"
 #include "scenes/Scene.h"
 
 class GameEngine
@@ -23,7 +24,7 @@ class GameEngine
     DebugUI debugUI_;
     bool bIsRunning_;
     Vec2f baseViewSize_;
-    
+    bool letterbox_;
     
     Scene* getCurrentScene()
     {
@@ -31,11 +32,12 @@ class GameEngine
     }
     
     void handleUserKeyboardInputEvent(sf::Keyboard::Key keyCode, const std::string& actionType);
-    void handleUserMouseInputEvent(sf::Mouse::Button button, const std::string& actionType);
+    void handleUserMouseInputEvent(sf::Mouse::Button button, const std::string& actionType, const Vector2<int> position);
     
     public:
     GameEngine();
     GameEngine(unsigned int width = 800, unsigned int height = 600, const std::string& title = "Game Engine");
+    explicit GameEngine(const GameConfig& config);
     
     void init();
     void run();
@@ -44,7 +46,6 @@ class GameEngine
     void update(float deltaTime);
     void render(float deltaTime);
     void changeScene(const std::string& sceneName);
-    void sUserInput();
 
     template <typename T, typename... Args>
     void registerScene(const std::string& sceneName, Args&&... args)
@@ -67,7 +68,8 @@ class GameEngine
     
     Vec2f getBaseViewSize() const { return baseViewSize_; }
     void setBaseViewSize(Vec2f newSize) { baseViewSize_ = newSize; }
-    
+    void handleResize(unsigned int width, unsigned int height);
+
     void drawTestGrid(sf::RenderWindow& window);
 
     Vec2f screenToWorldPos(Vec2f screenPosition) const {

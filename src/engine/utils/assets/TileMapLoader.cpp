@@ -31,6 +31,13 @@ namespace
 
 TileMap TileMapLoader::load(const std::string& filePath)
 {
+
+    std::ifstream file(filePath);
+    if (!file.is_open())
+    {
+        throw std::runtime_error("Failed to open asset file: " + filePath);
+    }
+
     const std::vector<std::string> lines = readLines(filePath);
     int tileWidth = 0;
     int tileHeight = 0;
@@ -42,8 +49,8 @@ TileMap TileMapLoader::load(const std::string& filePath)
     bool hasSize = false;
     int lineNumber = 0;
 
-    for (const std::string& line : lines)
-    {
+    std::string line = "";
+    while (std::getline(file, line)) {
         ++lineNumber;
         std::istringstream stream(line);
         std::string command;

@@ -1,4 +1,5 @@
 #pragma once
+#include "engine/components/Component.h"
 
 class CLifespan : public Component
 {

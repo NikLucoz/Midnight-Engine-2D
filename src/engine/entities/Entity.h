@@ -3,18 +3,20 @@
 #include <string>
 #include <tuple>
 
-#include "engine/components/CBoundingBox.h"
-#include "engine/components/CCircleCollider.h"
-#include "engine/components/CInput.h"
-#include "engine/components/CLifespan.h"
-#include "engine/components/CShape.h"
-#include "engine/components/CSpecialBullet.h"
-#include "engine/components/CSprite.h"
+#include "engine/components/collision/CBoundingBox.h"
+#include "engine/components/collision/CCircleCollider.h"
+#include "engine/components/gameplay/CInput.h"
+#include "engine/components/gameplay/CLifespan.h"
+#include "engine/components/rendering/CRenderable.h"
+#include "engine/components/rendering/CShape.h"
+#include "engine/components/gameplay/CSpecialBullet.h"
+#include "engine/components/rendering/CSprite.h"
 #include "engine/components/CTransform.h"
-#include "engine/components/CAnimatedSprite.h"
+#include "engine/components/rendering/CAnimatedSprite.h"
 
 using ComponentTuple = std::tuple<
     CTransform,
+    CRenderable,
     CSprite,
     CShape,
     CInput,
@@ -61,6 +63,13 @@ public:
         component = T(std::forward<TArgs>(mArgs)...);
         component.exists = true;
         return component;
+    }
+
+    template <typename T, typename... TArgs>
+    T& addRenderable(TArgs&&... mArgs)
+    {
+        addComponent<CRenderable>();
+        return addComponent<T>(std::forward<TArgs>(mArgs)...);
     }
 
     template <typename T>

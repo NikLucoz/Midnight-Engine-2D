@@ -1,5 +1,5 @@
-﻿#pragma once
-#include "Component.h"
+#pragma once
+#include "engine/components/Component.h"
 
 class CSpecialBullet : public Component
 {
