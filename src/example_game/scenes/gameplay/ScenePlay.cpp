@@ -395,23 +395,12 @@ void ScenePlay::sDebugUI()
     ImGui::TextDisabled("Toggle runtime systems without restarting the scene.");
     ImGui::Separator();
 
-    if (ImGui::CollapsingHeader("Simulation", ImGuiTreeNodeFlags_DefaultOpen))
+    if (ImGui::CollapsingHeader("Systems", ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::Checkbox("Movement system", &gameEngine_->getDebugOptions().systems.movement);
         ImGui::Checkbox("Collision system", &gameEngine_->getDebugOptions().systems.collision);
         ImGui::Checkbox("Lifespan system", &gameEngine_->getDebugOptions().systems.lifespan);
         ImGui::Checkbox("Animation system", &gameEngine_->getDebugOptions().systems.animation);
         ImGui::Checkbox("Enemy spawner", &gameEngine_->getDebugOptions().systems.enemySpawner);
-    }
-
-    if (ImGui::CollapsingHeader("Rendering", ImGuiTreeNodeFlags_DefaultOpen))
-    {
-        ImGui::Checkbox("Render system", &gameEngine_->getDebugOptions().systems.render);
-        ImGui::Checkbox("Collision debug geometry", &gameEngine_->getDebugOptions().showCollisionGeometry);
-    }
-
-    if (ImGui::CollapsingHeader("Diagnostics"))
-    {
-        ImGui::TextDisabled("More scene counters and profilers can be added here.");
     }
 }

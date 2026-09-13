@@ -250,6 +250,12 @@ void DebugUI::Update(sf::Time deltaTime, const DebugRuntimeInfo& runtimeInfo,
         if (ImGui::BeginTabItem("Scene"))
         {
             if (drawSceneContent) drawSceneContent();
+
+            if (ImGui::CollapsingHeader("Rendering", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                ImGui::Checkbox("Render system", &options_.systems.render);
+                ImGui::Checkbox("Collision debug geometry",  &options_.showCollisionGeometry);
+            }
             ImGui::EndTabItem();
         }
 
