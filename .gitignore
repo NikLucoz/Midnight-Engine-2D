@@ -25,3 +25,5 @@ Makefile
 *.user
 *.suo
 *.sln.docstates
+
+todo.txt
