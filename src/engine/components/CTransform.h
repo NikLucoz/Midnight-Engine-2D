@@ -3,7 +3,7 @@
 #include "engine/components/Component.h"
 #include "engine/utils/math/Vector2.h"
 
-class CTransform : public Component
+struct CTransform : public Component
 {
 public:
     Vec2f position = {0.0f, 0.0f};

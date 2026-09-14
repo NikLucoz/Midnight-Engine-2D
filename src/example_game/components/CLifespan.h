@@ -1,7 +1,7 @@
 #pragma once
 #include "engine/components/Component.h"
 
-class CLifespan : public Component
+struct CLifespan : public Component
 {
 public:
     float remainingSeconds_ = 0.0f;

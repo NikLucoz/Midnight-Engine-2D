@@ -2,7 +2,7 @@
 #include "engine/components/Component.h"
 #include "engine/utils/math/Vector2.h"
 
-class CInput : public Component
+struct CInput : public Component
 {
 public:
     bool bUp = false;

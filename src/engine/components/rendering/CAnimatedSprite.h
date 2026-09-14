@@ -2,7 +2,7 @@
 #include "engine/components/Component.h"
 #include <engine/assets/Animation.h>
 
-class CAnimatedSprite : public Component
+struct CAnimatedSprite : public Component
 {
 public:
     Animation* animation = nullptr;

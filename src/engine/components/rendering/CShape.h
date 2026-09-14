@@ -3,7 +3,7 @@
 #include "engine/components/Component.h"
 #include <SFML/Graphics/CircleShape.hpp>
 
-class CShape : public Component
+struct CShape : public Component
 {
     sf::CircleShape shape;
 

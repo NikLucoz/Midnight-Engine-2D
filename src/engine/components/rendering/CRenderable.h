@@ -3,7 +3,7 @@
 #include "engine/components/Component.h"
 #include "engine/utils/math/Vector2.h"
 
-class CRenderable : public Component {
+struct CRenderable : public Component {
     
     Vec2f localScale_ = {1.0f, 1.0f};
     bool visible_ = true;

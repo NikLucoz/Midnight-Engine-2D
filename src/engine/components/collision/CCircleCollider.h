@@ -1,7 +1,7 @@
 #pragma once
 #include "engine/components/Component.h"
 
-class CCircleCollider : public Component
+struct CCircleCollider : public Component
 {
 public:
     float radius_;

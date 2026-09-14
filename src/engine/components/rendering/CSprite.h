@@ -6,7 +6,7 @@
 #include "engine/utils/math/Vector2.h"
 #include <optional>
 
-class CSprite : public Component
+struct CSprite : public Component
 {
     std::optional<sf::Sprite> sprite_;
 public:

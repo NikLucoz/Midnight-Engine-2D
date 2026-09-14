@@ -245,10 +245,10 @@ void ScenePlay::sCollision()
     
     for (auto& enemy : enemies)
     {
-        
+        if (!enemy->hasComponent<CTransform>() || !enemy->hasComponent<CBoundingBox>()) continue;
+
         auto& eTransform = enemy->getComponent<CTransform>();
         auto& eBoundingBox = enemy->getComponent<CBoundingBox>();
-        if (!enemy->hasComponent<CBoundingBox>()) continue;
         if (IsColliding(player_.get(), enemy.get()))
         {
             spawnEnemyDeathParticles(enemy.get());
@@ -259,12 +259,12 @@ void ScenePlay::sCollision()
 
         for (auto& bullet : bullets)
         {
-            if (!bullet->hasComponent<CCircleCollider>()) continue;
+            if (!bullet->hasComponent<CTransform>() ||
+                !bullet->hasComponent<CBoundingBox>()) continue;
+
             auto& bTransform = bullet->getComponent<CTransform>();
-            auto& bCollider = bullet->getComponent<CBoundingBox>();
             
-            float distanceToBullet = eTransform.getPosition().distanceToSquared(bTransform.getPosition());
-             if (IsColliding(enemy.get(), bullet.get()))
+            if (IsColliding(enemy.get(), bullet.get()))
             {
                 spawnEnemyDeathParticles(enemy.get());
                 enemy->destroy();

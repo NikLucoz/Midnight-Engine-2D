@@ -2,7 +2,7 @@
 #include "engine/components/Component.h"
 #include "engine/utils/math/Vector2.h"
 
-class CBoundingBox : public Component
+struct CBoundingBox : public Component
 {
 public:
     Vector2<int> size;
