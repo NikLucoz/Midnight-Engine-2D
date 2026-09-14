@@ -21,6 +21,7 @@ class GameEngine
     std::string currentScene_;
     std::unique_ptr<Camera> camera_;
     std::unique_ptr<Assets> assets_;
+    GameConfig gameConfig;
     DebugUI debugUI_;
     bool bIsRunning_;
     Vec2f baseViewSize_;

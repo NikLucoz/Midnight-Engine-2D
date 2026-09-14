@@ -14,6 +14,7 @@ struct GameConfig {
   Vec2f logicalViewSize = Vec2f(1280.0f, 720.0f);
 
   unsigned int framerateLimit = 60;
+  unsigned int simulationRate = 60;
   bool letterbox = true;
 };
 
@@ -71,6 +72,9 @@ public:
       }
     } else if (key == "framerateLimit") {
       if (!(iss >> config.framerateLimit)) fail();
+    }
+    else if(key == "simulationRate") {
+      if(!(iss >> config.simulationRate)) fail();
     } else {
       throw std::runtime_error(
         filePath + ":" + std::to_string(lineNumber) +

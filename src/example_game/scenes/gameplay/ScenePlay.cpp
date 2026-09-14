@@ -379,6 +379,7 @@ void ScenePlay::sDebug()
         }
     }
     
+    /*
     const auto& player_pos = player_->getComponent<CTransform>().getPosition();
     const Vec2f end = player_pos + Vec2f::RIGHT() * 100.0f;
     sf::VertexArray ray(sf::PrimitiveType::Lines, 2);
@@ -387,6 +388,7 @@ void ScenePlay::sDebug()
     ray[1].position = sf::Vector2f(end.x, end.y);
     ray[1].color = sf::Color::Red;
     gameEngine_->getWindow().draw(ray);
+    */
 }
 
 void ScenePlay::sDebugUI()
