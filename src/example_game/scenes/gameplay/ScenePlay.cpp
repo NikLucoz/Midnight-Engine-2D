@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "engine/actions/Action.h"
 #include "engine/components/collision/CCircleCollider.h"
+#include "engine/components/rendering/CRenderable.h"
 #include "engine/entities/EntityManager.h"
 #include "example_game/entities/EPlayer.h"
 #include "example_game/components/CLifespan.h"
@@ -48,8 +49,18 @@ void ScenePlay::init()
 
     auto e = EntityManager::getInstance().addEntity("enemy", gameEngine_->getCurrentSceneName(), "EnemyRaycastTest");
     e->addComponent<CTransform>(Vec2f(600, 600), Vec2f(0, 0), 0, Vec2f(1,1));
-    e->addRenderable<CShape>(25, 4, sf::Color::Green, sf::Color::White, 4);
+    e->addRenderable<CShape>(25, 4, sf::Color::Red, sf::Color::White, 4);
     e->addComponent<CBoundingBox>(Vector2<int>(50,50));
+
+    auto e1 = EntityManager::getInstance().addEntity("enemy", gameEngine_->getCurrentSceneName(), "EnemyRaycastTest1");
+    e1->addComponent<CTransform>(Vec2f(620, 600), Vec2f(0, 0), 0, Vec2f(1,1));
+    e1->addRenderable<CShape>(25, 4, sf::Color::Green, sf::Color::White, 4);
+    e1->addComponent<CBoundingBox>(Vector2<int>(50,50));
+
+    auto e2 = EntityManager::getInstance().addEntity("enemy", gameEngine_->getCurrentSceneName(), "EnemyRaycastTest2");
+    e2->addComponent<CTransform>(Vec2f(590, 600), Vec2f(0, 0), 0, Vec2f(1,1));
+    e2->addRenderable<CShape>(25, 4, sf::Color::Blue, sf::Color::White, 4);
+    e2->addComponent<CBoundingBox>(Vector2<int>(50,50));
 }
 
 void ScenePlay::destroy()
@@ -83,10 +94,11 @@ void ScenePlay::sRender(float dt)
     
     if (!gameEngine_->getDebugOptions().systems.render) return;
     
-    RenderContext context{
+    RenderContext context {
     gameEngine_->getWindow(),
     gameEngine_->getAssets(),
-    gameEngine_->getDebugOptions()
+    EntityManager::getInstance().getEntities(),
+    gameEngine_->getDebugOptions(),
     };
     
     renderingSystem_->renderTilemapLayer(context, tilemap_, "ground");

@@ -27,3 +27,4 @@ Makefile
 *.sln.docstates
 
 todo.txt
+.clang-format

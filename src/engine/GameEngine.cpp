@@ -41,26 +41,12 @@ void GameEngine::run() {
   bIsRunning_ = true;
 
   try {
-    float accumulator = 0.0f;
-    const float fixedStep =
-        gameConfig.framerateLimit > 0
-            ? 1.0f / static_cast<float>(gameConfig.simulationRate)
-            : 1.0f / 60.0f;
-
-    while (window_.isOpen() && bIsRunning_) {
-      const float frameDelta = std::min(clock_.restart().asSeconds(), 0.25f);
-
-      accumulator += frameDelta;
-      handleEvents();
-
-      // If lag occurs this may do more updates before rendering to catch up
-      while (accumulator >= fixedStep) {
-        update(fixedStep);
-        accumulator -= fixedStep;
-      }
-
-      // Rendering continues whenever there is no pending simulation step
-      render(frameDelta);
+     while (window_.isOpen() && bIsRunning_) {
+            float deltaTime = clock_.restart().asSeconds();
+            deltaTime = std::min(deltaTime, 0.1f);
+            handleEvents();
+            update(deltaTime);
+            render(deltaTime);
     }
   } catch (const std::exception &e) {
     std::cout << "Engine error: " << e.what() << std::endl;

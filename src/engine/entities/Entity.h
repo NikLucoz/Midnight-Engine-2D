@@ -3,6 +3,7 @@
 #include <string>
 #include <typeindex>
 #include <unordered_map>
+#include <vector>
 #include "engine/components/rendering/CRenderable.h"
 
 
@@ -25,20 +26,23 @@ using ComponentMap = std::unordered_map<std::type_index, std::any>;
 
 class Entity
 {
-private:
+    private:
+    size_t id_ = 0;
     ComponentMap components_;
     bool bIsMarkedForDestruction_ = false;
     std::string tag_ = "default";
     std::string name_ = "entity";
     std::string sceneName_ = "default";
-    size_t id_ = 0;
-
-protected:
+    size_t parentId_ = NoParent;
+    std::vector<size_t> childrenIds_;
+    
+    protected:
     Entity();
     Entity(const std::string& tag, const std::string& sceneName, size_t id,
-           const std::string& name = "entity");
-
-public:
+        const std::string& name = "entity");
+        
+    public:
+    static constexpr std::size_t NoParent = std::numeric_limits<std::size_t>::max();
     
     template <typename T>
     T& getComponent()
@@ -88,6 +92,17 @@ public:
     const std::string& getSceneName() const;
     const std::string& getName() const;
     bool isMarkedForDestruction() const;
+
+    void addChild(Entity& child);
+    void removeChild(Entity& child);
+    bool hasChild(Entity& entity);
+    bool hasChild(size_t id);
+
+    size_t getParent();
+    void setParent(size_t id);
+
+    void changeChildOrder(size_t id, int index);
+    const std::vector<size_t>& getChildrens() const;
     
     // with this only the EntityManager can create Entities since the constructors are private
     friend class EntityManager;

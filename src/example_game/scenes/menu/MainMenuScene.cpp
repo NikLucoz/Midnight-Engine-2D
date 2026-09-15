@@ -42,6 +42,7 @@ void MainMenuScene::sRender(float dt)
     RenderContext context{
     gameEngine_->getWindow(),
     gameEngine_->getAssets(),
+    EntityManager::getInstance().getEntities(),
     gameEngine_->getDebugOptions()
     };
 
