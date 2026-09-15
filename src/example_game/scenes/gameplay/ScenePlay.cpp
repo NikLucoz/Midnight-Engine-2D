@@ -166,7 +166,12 @@ void ScenePlay::sMovement(float dt)
         transform.position.y += transform.velocity.y * movementDirection.y * dt;
     }
 
-    gameEngine_->getCamera().setTarget(player_->getComponent<CTransform>().getPosition());
+    if (!gameEngine_->getDebugOptions().freeCameraActive)
+    {
+        gameEngine_->getCamera().setTarget(
+            player_->getComponent<CTransform>().getPosition()
+        );
+    }
     
     std::vector<std::string> tags{"bullet", "enemy"};
     auto movable_entities = EntityManager::getInstance().getEntities(tags);
