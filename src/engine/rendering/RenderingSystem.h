@@ -11,7 +11,7 @@
 #include "engine/components/rendering/CSprite.h"
 #include "engine/entities/Entity.h"
 #include "engine/entities/EntityManager.h"
-#include "engine/utils/debug_ui/DebugUI.h"
+#include "engine/editor/engine_ui/DebugUI.h"
 #include "engine/utils/math/Transform2D.h"
 #include "engine/utils/math/TransformUtils.h"
 #include <SFML/Graphics.hpp>
@@ -140,6 +140,7 @@ class DefaultRenderingSystem : public IRenderingSystem {
             sfSprite.setPosition(sf::Vector2f(pos.x, pos.y));
             sfSprite.setRotation(sf::degrees(worldTransform.rotation));
             sfSprite.setScale(finalScale);
+            sfSprite.setColor(sprite.m_color);
             renderContext.renderTarget.draw(sfSprite);
         }
 

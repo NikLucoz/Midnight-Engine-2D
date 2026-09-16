@@ -1,5 +1,5 @@
 #include "HierarchyInspector.h"
-#include "engine/utils/debug_ui/DebugUI.h"
+#include "engine/editor/engine_ui/DebugUI.h"
 #include "imgui.h"
 #include <algorithm>
 #include <string>

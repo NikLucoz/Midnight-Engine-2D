@@ -6,7 +6,6 @@
 #include "SFML/Window/Keyboard.hpp"
 #include "engine/Assets/Assets.h"
 #include "engine/camera/Camera.h"
-#include "engine/entities/EntityManager.h"
 
 namespace {
 constexpr float consoleHeight = 240.0f;

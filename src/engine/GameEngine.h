@@ -8,7 +8,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include "engine/Assets/Assets.h"
 #include "engine/camera/Camera.h"
-#include "engine/utils/debug_ui/DebugUI.h"
+#include "engine/editor/engine_ui/DebugUI.h"
 #include "engine/utils/math/Vector2.h"
 #include "engine/utils/assets/GameConfigLoader.h"
 #include "scenes/Scene.h"

@@ -1,8 +1,8 @@
 #pragma once
 #include "engine/camera/Camera.h"
 #include "engine/entities/Entity.h"
-#include "engine/utils/engine_ui/EntityInspector.h"
-#include "engine/utils/engine_ui/HierarchyInspector.h"
+#include "engine/editor/engine_ui/EntityInspector.h"
+#include "engine/editor/engine_ui/HierarchyInspector.h"
 #include <SFML/Graphics.hpp>
 #include <cstddef>
 #include <functional>
