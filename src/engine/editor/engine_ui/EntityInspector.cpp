@@ -1,6 +1,6 @@
 #include "EntityInspector.h"
 #include "SFML/Graphics/RenderTarget.hpp"
-#include "engine/editor/ComponentDrawerRegistry.h"
+#include "engine/editor/components_registry/ComponentDrawerRegistry.h"
 #include "engine/entities/Entity.h"
 #include "engine/entities/EntityManager.h"
 #include "imgui.h"
@@ -32,7 +32,7 @@ void EntityInspector::render(sf::RenderTarget &renderTarget, const DebugRuntimeI
     
     ImGui::SetNextWindowSize(ImVec2(panelWidth, inspectorHeight), ImGuiCond_Always);
    
-    if (!ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse)) {
+    if (!ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize)) {
         ImGui::End();
         return;
     }
@@ -41,12 +41,8 @@ void EntityInspector::render(sf::RenderTarget &renderTarget, const DebugRuntimeI
     
     ImGui::SameLine(0, 20);
     if (ImGui::Button("Destroy")) {
-        if (currentEntity_->getParent() != Entity::NoParent) {
-            setCurrentEntity(EntityManager::getInstance().getEntityWithId(currentEntity_->getParent()));
-        } else {
-            clearCurrentEntity();
-        }
         currentEntity_->destroy();
+        clearCurrentEntity();
         ImGui::End();
         return;
     }

@@ -13,7 +13,7 @@ void HierarchyInspector::render(const DebugRuntimeInfo &runtimeInfo, const Entit
     const float panelHeight = std::max(240.0f, viewport->WorkSize.y - bottomPanelHeight);
     ImGui::SetNextWindowPos(viewport->WorkPos, ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(panelWidth, panelHeight), ImGuiCond_Always);
-    if (!ImGui::Begin("Hierarchy", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse)) {
+    if (!ImGui::Begin("Hierarchy", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize)) {
         ImGui::End();
         return;
     }

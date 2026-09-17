@@ -36,7 +36,7 @@ class Entity {
 
   protected:
     Entity();
-    Entity(const std::string &tag, const std::string &sceneName, size_t id, const std::string &name = "entity");
+    Entity(const std::string &tag, size_t id, const std::string &name = "entity");
 
   public:
     static constexpr std::size_t NoParent = std::numeric_limits<std::size_t>::max();
@@ -77,7 +77,7 @@ class Entity {
     const std::string &getSceneName() const;
     const std::string &getName() const;
     bool isMarkedForDestruction() const;
-
+    void setSceneName(std::string sceneName);
     void addChild(Entity &child);
     void removeChild(Entity &child);
     bool hasChild(Entity &entity);

@@ -3,6 +3,7 @@
 #include <iostream>
 #include "SFML/Graphics/Color.hpp"
 #include "engine/actions/Action.h"
+#include "engine/entities/PrefabEntityLoader.h"
 #include "example_game/scenes/Gameplay/ScenePlay.h"
 #include "engine/components/rendering/CSprite.h"
 #include "engine/components/CTransform.h"
@@ -18,9 +19,13 @@ MainMenuScene::MainMenuScene(GameEngine* gameEngine) : Scene(gameEngine) {
 
 void MainMenuScene::init()
 {
-    const auto& card = EntityManager::getInstance().addEntity("card", gameEngine_->getCurrentSceneName(), "Fireball Card");
+    const auto& card = EntityManager::getInstance().addEntity("card", "Fireball Card");
+    card->setSceneName(gameEngine_->getCurrentSceneName());
     card->addComponent<CTransform>(Vec2f(100, 100), Vec2f(0,0), 0, Vec2f(1,1));
-    card->addRenderable<CSprite>(gameEngine_->getAssets().getTexture("fireballCardTexture"), Vec2f(200, 400), Vec2f(0,0));
+    card->addRenderable<CSprite>(Assets::getInstance().getTexture("fireballCardTexture"), Vec2f(200, 400), Vec2f(0,0));
+
+    const auto& player = PrefabEntityLoader::LoadEntity("game/prefabs/player_prefab.cfg");
+    player->setSceneName(gameEngine_->getCurrentSceneName());
 }
 
 void MainMenuScene::destroy()
@@ -41,7 +46,6 @@ void MainMenuScene::sRender(float dt)
 
     RenderContext context{
     gameEngine_->getWindow(),
-    gameEngine_->getAssets(),
     EntityManager::getInstance().getEntities(),
     gameEngine_->getDebugOptions()
     };
@@ -57,6 +61,6 @@ void MainMenuScene::sDebug()
 void MainMenuScene::sDoAction(const Action &action)
 {
     if (action.name() == "UI_Enter") {
-        gameEngine_->changeScene("gameplay_scene");
+        //gameEngine_->changeScene("gameplay_scene");
     }
 }

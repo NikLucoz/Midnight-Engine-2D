@@ -15,7 +15,7 @@ GameEngine::GameEngine() : GameEngine(GameConfig{}) {}
 GameEngine::GameEngine(unsigned int width, unsigned int height, const std::string &title) : GameEngine(GameConfig{width, height, title, Vec2f(1280.0f, 720.0f), 60, true}) {}
 
 GameEngine::GameEngine(const GameConfig &config)
-    : window_(sf::VideoMode({config.windowWidth, config.windowHeight}), config.windowTitle), bIsRunning_(false), assets_(std::make_unique<Assets>()), scenes_(), baseViewSize_(config.logicalViewSize),
+    : window_(sf::VideoMode({config.windowWidth, config.windowHeight}), config.windowTitle), bIsRunning_(false), scenes_(), baseViewSize_(config.logicalViewSize),
       letterbox_(config.letterbox) {
     gameConfig = config;
     if (config.framerateLimit > 0)
@@ -26,8 +26,8 @@ GameEngine::GameEngine(const GameConfig &config)
 }
 
 void GameEngine::init() {
-    AssetsLoader::loadAssetsFromFile(*assets_, "game/assets/assets.cfg");
-    debugUI_.Init(window_, *assets_);
+    AssetsLoader::loadAssetsFromFile("game/assets/assets.cfg");
+    debugUI_.Init(window_);
 }
 
 void GameEngine::run() {
@@ -79,10 +79,10 @@ void GameEngine::render(float deltaTime) {
     runtimeInfo.windowSize = window_.getSize();
     runtimeInfo.currentScene = currentScene_;
     runtimeInfo.loadedScenes = getSceneNames();
-    runtimeInfo.textures = assets_->getTextureNames();
-    runtimeInfo.animations = assets_->getAnimationNames();
-    runtimeInfo.sounds = assets_->getSoundNames();
-    runtimeInfo.fonts = assets_->getFontNames();
+    runtimeInfo.textures = Assets::getInstance().getTextureNames();
+    runtimeInfo.animations = Assets::getInstance().getAnimationNames();
+    runtimeInfo.sounds = Assets::getInstance().getSoundNames();
+    runtimeInfo.fonts = Assets::getInstance().getFontNames();
     runtimeInfo.changeScene = [this](const std::string &sceneName) { changeScene(sceneName); };
 
     runtimeInfo.camera = camera_.get();
@@ -177,8 +177,6 @@ void GameEngine::changeScene(const std::string &sceneName) {
     currentScene_ = sceneName;
     getCurrentScene()->init();
 }
-
-Assets &GameEngine::getAssets() const { return *assets_; }
 
 Camera &GameEngine::getCamera() const { return *camera_; }
 

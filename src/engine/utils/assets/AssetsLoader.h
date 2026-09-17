@@ -8,5 +8,5 @@ class AssetsLoader
 {
     static std::vector<std::string> splitBySpace(const std::string& str);
 public:
-    static void loadAssetsFromFile(Assets &assets, const std::string &filePath);
+    static void loadAssetsFromFile(const std::string &filePath);
 };

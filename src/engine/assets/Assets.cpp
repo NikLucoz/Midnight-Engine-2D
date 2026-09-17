@@ -2,6 +2,11 @@
 #include "Animation.h"
 #include <stdexcept>
 
+Assets& Assets::getInstance() {
+    static Assets instance;
+    return instance;
+}
+
 void Assets::addTexture(std::string name, std::string path)
 {
     sf::Texture texture;

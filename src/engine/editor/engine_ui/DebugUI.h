@@ -60,7 +60,7 @@ class DebugUI {
 
   public:
     DebugUI();
-    void Init(sf::RenderWindow &window, const Assets &assets);
+    void Init(sf::RenderWindow &window);
     void Update(sf::Time deltaTime, const DebugRuntimeInfo &runtimeInfo, const std::function<void()> &drawSceneContent);
     void Render();
     void ProcessEvent(sf::Event &event);

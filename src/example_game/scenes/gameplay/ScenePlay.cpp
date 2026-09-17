@@ -36,7 +36,8 @@ void ScenePlay::init()
         cameraPosition.y
     );
 
-    player_ = EntityManager::getInstance().addEntity<EPlayer>("player", gameEngine_->getCurrentSceneName(), "PlayerEntity");
+    player_ = EntityManager::getInstance().addEntity<EPlayer>("player", "PlayerEntity");
+    player_->setSceneName(gameEngine_->getCurrentSceneName());
     player_->getComponent<CTransform>().position = startPos;
     player_->startPosition = startPos;
     gameEngine_->getCamera().setTarget(startPos);
@@ -47,17 +48,20 @@ void ScenePlay::init()
     //gumba->addRenderable<CAnimatedSprite>(gameEngine_->getAssets().getAnimation("gumbaWalkingAnimation"));
     //gumba->addComponent<CBoundingBox>(Vector2<int>(16*6, 16*6));
 
-    auto e = EntityManager::getInstance().addEntity("enemy", gameEngine_->getCurrentSceneName(), "EnemyRaycastTest");
+    auto e = EntityManager::getInstance().addEntity("enemy", "EnemyRaycastTest");
+    e->setSceneName(gameEngine_->getCurrentSceneName());
     e->addComponent<CTransform>(Vec2f(600, 600), Vec2f(0, 0), 0, Vec2f(1,1));
     e->addRenderable<CShape>(25, 4, sf::Color::Red, sf::Color::White, 4);
     e->addComponent<CBoundingBox>(Vector2<int>(50,50));
 
-    auto e1 = EntityManager::getInstance().addEntity("enemy", gameEngine_->getCurrentSceneName(), "EnemyRaycastTest1");
+    auto e1 = EntityManager::getInstance().addEntity("enemy", "EnemyRaycastTest1");
+    e->setSceneName(gameEngine_->getCurrentSceneName());
     e1->addComponent<CTransform>(Vec2f(620, 600), Vec2f(0, 0), 0, Vec2f(1,1));
     e1->addRenderable<CShape>(25, 4, sf::Color::Green, sf::Color::White, 4);
     e1->addComponent<CBoundingBox>(Vector2<int>(50,50));
 
-    auto e2 = EntityManager::getInstance().addEntity("enemy", gameEngine_->getCurrentSceneName(), "EnemyRaycastTest2");
+    auto e2 = EntityManager::getInstance().addEntity("enemy", "EnemyRaycastTest2");
+    e->setSceneName(gameEngine_->getCurrentSceneName());
     e2->addComponent<CTransform>(Vec2f(590, 600), Vec2f(0, 0), 0, Vec2f(1,1));
     e2->addRenderable<CShape>(25, 4, sf::Color::Blue, sf::Color::White, 4);
     e2->addComponent<CBoundingBox>(Vector2<int>(50,50));
@@ -96,7 +100,6 @@ void ScenePlay::sRender(float dt)
     
     RenderContext context {
     gameEngine_->getWindow(),
-    gameEngine_->getAssets(),
     EntityManager::getInstance().getEntities(),
     gameEngine_->getDebugOptions(),
     };
@@ -237,7 +240,8 @@ void ScenePlay::sEnemySpawner(float dt)
         int g = rand() % 255;
         int b = rand() % 255;
 
-        auto e = EntityManager::getInstance().addEntity("enemy", gameEngine_->getCurrentSceneName(), "MovingEnemy");
+        auto e = EntityManager::getInstance().addEntity("enemy", "MovingEnemy");
+        e->setSceneName(gameEngine_->getCurrentSceneName());
         e->addComponent<CTransform>(Vec2f(randomX, randomY), Vec2f(velX, velY), 0, Vec2f(1,1));
         e->addRenderable<CShape>(25, randomPoints, sf::Color(r, g, b), sf::Color::White, 4);
         e->addComponent<CBoundingBox>(Vector2<int>(50,50));
@@ -352,7 +356,8 @@ void ScenePlay::spawnEnemyDeathParticles(Entity* enemy)
             auto velX = std::cosf(radiandAngles) * 300;
             auto velY = -1 * std::sinf(radiandAngles) * 300;
 
-            std::shared_ptr<Entity> enemyParticle = EntityManager::getInstance().addEntity("enemy", gameEngine_->getCurrentSceneName(), "EnemyDeathParticle");
+            std::shared_ptr<Entity> enemyParticle = EntityManager::getInstance().addEntity("enemy", "EnemyDeathParticle");
+            enemyParticle->setSceneName(gameEngine_->getCurrentSceneName());
             enemyParticle->addRenderable<CShape>(10, cShape.point_count_, cShape.fillColor_, cShape.outlineColor_, 2);
             enemyParticle->addComponent<CLifespan>(0.4);
             enemyParticle->addComponent<CTransform>(eTransform.getPosition(), Vec2f(velX, velY), eTransform.getRotation(), Vec2f(1,1));

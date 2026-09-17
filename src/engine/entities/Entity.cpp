@@ -7,12 +7,11 @@ Entity::Entity()
 {
 }
 
-Entity::Entity(const std::string& tag, const std::string& sceneName, size_t id, const std::string& name)
+Entity::Entity(const std::string& tag, size_t id, const std::string& name)
 {
     name_ = name;
     tag_ = tag;
     id_ = id;
-    sceneName_ = sceneName;
 }
 
 
@@ -56,6 +55,11 @@ bool Entity::isMarkedForDestruction() const
 {
     return bIsMarkedForDestruction_;
 }
+
+void Entity::setSceneName(std::string sceneName) {
+    sceneName_ = sceneName;
+}
+
 
 void Entity::addChild(Entity& child) {
     if (&child == this || hasChild(child)) {

@@ -51,5 +51,5 @@ public:
     TileLayer& getLayer(const std::string& layerName);
     const TileLayer& getLayer(const std::string& layerName) const;
 
-    void drawLayer(sf::RenderWindow& window, Assets& assets, TileLayer& layer) const;
+    void drawLayer(sf::RenderWindow& window, TileLayer& layer) const;
 };

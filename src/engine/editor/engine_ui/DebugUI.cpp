@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "SFML/Window/Keyboard.hpp"
-#include "engine/Assets/Assets.h"
+#include "engine/assets/Assets.h"
 #include "engine/camera/Camera.h"
 
 namespace {
@@ -13,7 +13,7 @@ constexpr float consoleHeight = 240.0f;
 
 DebugUI::DebugUI() {}
 
-void DebugUI::Init(sf::RenderWindow &window, const Assets &assets) {
+void DebugUI::Init(sf::RenderWindow &window) {
     Window = &window;
     if (!ImGui::SFML::Init(*Window)) {
         std::cerr << "Failed to initialize ImGui-SFML!\n";
@@ -21,7 +21,7 @@ void DebugUI::Init(sf::RenderWindow &window, const Assets &assets) {
     }
 
     initialized_ = true;
-    ImFont *arialFont = ImGui::GetIO().Fonts->AddFontFromFileTTF(assets.getFontPath("fontArial").c_str(), 16.0f);
+    ImFont *arialFont = ImGui::GetIO().Fonts->AddFontFromFileTTF(Assets::getInstance().getFontPath("fontArial").c_str(), 16.0f);
     if (arialFont != nullptr) {
         ImGui::GetIO().FontDefault = arialFont;
         (void)ImGui::SFML::UpdateFontTexture();
@@ -194,7 +194,6 @@ void DebugUI::ProcessEvent(sf::Event &event) {
         }
     }
 
-    // --- Mouse button ---
     if (const auto *mousePressed = event.getIf<sf::Event::MouseButtonPressed>()) {
         if (mousePressed->button == sf::Mouse::Button::Middle && bIsInMouseDragMode_) {
             bIsDragging_ = true;
@@ -208,7 +207,6 @@ void DebugUI::ProcessEvent(sf::Event &event) {
         }
     }
 
-    // --- Mouse move (the actual panning) ---
     if (const auto *mouseMoved = event.getIf<sf::Event::MouseMoved>()) {
         if (bIsDragging_) {
             sf::Vector2i currentPos = sf::Mouse::getPosition(*Window);

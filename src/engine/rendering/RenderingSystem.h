@@ -9,18 +9,18 @@
 #include "engine/components/rendering/CRenderable.h"
 #include "engine/components/rendering/CShape.h"
 #include "engine/components/rendering/CSprite.h"
+#include "engine/editor/engine_ui/DebugUI.h"
 #include "engine/entities/Entity.h"
 #include "engine/entities/EntityManager.h"
-#include "engine/editor/engine_ui/DebugUI.h"
 #include "engine/utils/math/Transform2D.h"
 #include "engine/utils/math/TransformUtils.h"
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
 
+
 struct RenderContext {
     sf::RenderTarget &renderTarget;
-    Assets &assets;
     std::vector<std::shared_ptr<Entity>> &entitiesToRender;
     const DebugOptions &debugOptions;
 };
@@ -30,8 +30,7 @@ class IRenderingSystem {
     virtual ~IRenderingSystem() = default;
 
     virtual void renderEntities(float deltaTime, RenderContext renderContext) = 0;
-    virtual void renderTilemapLayer(RenderContext renderContext, TileMap &tilemap,
-                                    std::string tilemapLayerName = "default") = 0;
+    virtual void renderTilemapLayer(RenderContext renderContext, TileMap &tilemap, std::string tilemapLayerName = "default") = 0;
 };
 
 class DefaultRenderingSystem : public IRenderingSystem {
@@ -44,8 +43,7 @@ class DefaultRenderingSystem : public IRenderingSystem {
         for (const auto &entityPtr : renderContext.entitiesToRender) {
             Entity &entity = *entityPtr;
 
-            if (entity.getParent() == Entity::NoParent && entity.hasComponent<CRenderable>() &&
-                entity.getComponent<CRenderable>().isVisible()) {
+            if (entity.getParent() == Entity::NoParent && entity.hasComponent<CRenderable>() && entity.getComponent<CRenderable>().isVisible()) {
                 roots.push_back(&entity);
             }
         }
@@ -80,8 +78,7 @@ class DefaultRenderingSystem : public IRenderingSystem {
 
             Transform2D localTransform{local.getPosition(), local.getScale(), local.getRotation()};
 
-            worldTransform =
-                parentTransform == nullptr ? localTransform : TransformUtils::combine(*parentTransform, localTransform);
+            worldTransform = parentTransform == nullptr ? localTransform : TransformUtils::combine(*parentTransform, localTransform);
 
             renderComponents(entity, context, worldTransform);
         }
@@ -131,8 +128,7 @@ class DefaultRenderingSystem : public IRenderingSystem {
 
             Vec2f calculatedScale(desiredSize.x / textureSize.x, desiredSize.y / textureSize.y);
 
-            sf::Vector2f finalScale =
-                (calculatedScale * (cRenderable.getLocalScale() * worldTransform.scale)).toSFVector2();
+            sf::Vector2f finalScale = (calculatedScale * (cRenderable.getLocalScale() * worldTransform.scale)).toSFVector2();
 
             sf::Vector2f spriteOrigin(textureSize.x / 2.0f, textureSize.y / 2.0f);
 
@@ -145,7 +141,7 @@ class DefaultRenderingSystem : public IRenderingSystem {
         }
 
         if (renderContext.debugOptions.showEntityIds) {
-            sf::Text entityIdText(renderContext.assets.getFont("fontArial"), std::to_string(e.getId()), 14);
+            sf::Text entityIdText(Assets::getInstance().getFont("fontArial"), std::to_string(e.getId()), 14);
 
             entityIdText.setOrigin({7.0f, 14.0f});
             entityIdText.setPosition({pos.x, pos.y - 40.0f});
@@ -171,14 +167,10 @@ class DefaultRenderingSystem : public IRenderingSystem {
                     throw std::runtime_error("Tile definition not found: " + std::to_string(tileId));
 
                 const Tile &definition = definitionIt->second;
-                sf::Sprite sprite(renderContext.assets.getTexture(definition.getTilesetName()));
+                sf::Sprite sprite(Assets::getInstance().getTexture(definition.getTilesetName()));
                 sprite.setTextureRect(definition.getTextureRect());
-                sprite.setPosition(
-                    sf::Vector2f(
-                        static_cast<float>(tilemap.getOrigin().x + column * tilemap.getTileWidth()),
-                        static_cast<float>(renderContext.renderTarget.getSize().y - tilemap.getOrigin().y - (row + 1) * tilemap.getTileHeight())
-                    )
-                );
+                sprite.setPosition(sf::Vector2f(static_cast<float>(tilemap.getOrigin().x + column * tilemap.getTileWidth()),
+                                                static_cast<float>(renderContext.renderTarget.getSize().y - tilemap.getOrigin().y - (row + 1) * tilemap.getTileHeight())));
                 renderContext.renderTarget.draw(sprite);
             }
         }

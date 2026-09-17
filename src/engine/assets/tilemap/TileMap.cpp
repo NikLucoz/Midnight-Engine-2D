@@ -99,7 +99,7 @@ const std::vector<TileLayer>& TileMap::getLayers() const { return layers_; }
 
 
 
-void TileMap::drawLayer(sf::RenderWindow& window, Assets& assets, TileLayer& layer) const
+void TileMap::drawLayer(sf::RenderWindow& window, TileLayer& layer) const
 {
     for (int row = 0; row < height_; ++row)
     {
@@ -114,7 +114,7 @@ void TileMap::drawLayer(sf::RenderWindow& window, Assets& assets, TileLayer& lay
                 throw std::runtime_error("Tile definition not found: " + std::to_string(tileId));
 
             const Tile& definition = definitionIt->second;
-            sf::Sprite sprite(assets.getTexture(definition.getTilesetName()));
+            sf::Sprite sprite(Assets::getInstance().getTexture(definition.getTilesetName()));
             sprite.setTextureRect(definition.getTextureRect());
             sprite.setPosition(sf::Vector2f(
                 static_cast<float>(originX_ + column * tileWidth_),

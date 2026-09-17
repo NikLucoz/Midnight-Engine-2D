@@ -1,4 +1,4 @@
-#include "ComponentDrawerRegistry.h"
+#include "engine/editor/components_registry/ComponentDrawerRegistry.h"
 #include "engine/components/CTransform.h"
 #include "engine/components/collision/CBoundingBox.h"
 #include "engine/components/collision/CCircleCollider.h"

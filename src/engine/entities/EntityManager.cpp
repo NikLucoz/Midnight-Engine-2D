@@ -8,10 +8,10 @@ EntityManager& EntityManager::getInstance()
     return instance;
 }
 
-std::shared_ptr<Entity> EntityManager::addEntity(const std::string& tag, const std::string& sceneName, const std::string& entityName)
+std::shared_ptr<Entity> EntityManager::addEntity(const std::string& tag, const std::string& entityName)
 {
     const size_t id = totalEntities_++;
-    auto e = std::shared_ptr<Entity>(new Entity(tag, sceneName, id, entityName));
+    auto e = std::shared_ptr<Entity>(new Entity(tag, id, entityName));
     toAdd_.push_back(e);
     entitiesIdMap_[id] = e;
     return e;

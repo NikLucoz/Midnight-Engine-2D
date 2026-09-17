@@ -1,4 +1,4 @@
-#include "engine/editor/ComponentDrawerRegistry.h"
+#include "engine/editor/components_registry/ComponentDrawerRegistry.h"
 #include "example_game/components/CInput.h"
 #include "example_game/components/CSpecialBullet.h"
 #include <imgui.h>

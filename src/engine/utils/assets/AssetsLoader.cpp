@@ -6,7 +6,7 @@
 #include <string>
 #include "engine/assets/Assets.h"
 
-void AssetsLoader::loadAssetsFromFile(Assets &assets, const std::string &filePath)
+void AssetsLoader::loadAssetsFromFile(const std::string &filePath)
 {
     std::ifstream file(filePath);
     if (!file.is_open())
@@ -35,9 +35,9 @@ void AssetsLoader::loadAssetsFromFile(Assets &assets, const std::string &filePat
         const std::string& assetPath = tokens[2];
 
         if (assetType == "Texture") {
-            assets.addTexture(assetName, assetPath);
+            Assets::getInstance().addTexture(assetName, assetPath);
         } else if (assetType == "Sound") {
-            assets.addSound(assetName, assetPath);
+            Assets::getInstance().addSound(assetName, assetPath);
         } else if (assetType == "Animation") {
             const std::string& animationFrames = tokens[3];
             const std::string& animationSpeed = tokens[4];
@@ -46,10 +46,10 @@ void AssetsLoader::loadAssetsFromFile(Assets &assets, const std::string &filePat
             const size_t frameHeight = tokens.size() > 7 ? std::stoul(tokens[7]) : 0;
 
             bool bIsLoopable = animationIsLoopable == "true" ? true : false;
-            Animation animation(assetName, assets.getTexture(assetPath), std::stoul(animationFrames), std::stoi(animationSpeed), bIsLoopable, frameWidth, frameHeight);
-            assets.addAnimation(assetName, animation);
+            Animation animation(assetName, Assets::getInstance().getTexture(assetPath), std::stoul(animationFrames), std::stoi(animationSpeed), bIsLoopable, frameWidth, frameHeight);
+            Assets::getInstance().addAnimation(assetName, animation);
         } else if (assetType == "Font") {
-            assets.addFont(assetName, assetPath);
+            Assets::getInstance().addFont(assetName, assetPath);
         } else {
             std::cerr << "Unknown asset type: " << assetType << std::endl;
         }

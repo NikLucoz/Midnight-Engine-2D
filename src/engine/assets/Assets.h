@@ -15,9 +15,10 @@ class Assets
     std::map<std::string, sf::SoundBuffer> soundBuffers_;
     std::map<std::string, sf::Font> fonts_;
     std::map<std::string, std::string> fontPaths_;
-public:
     Assets() = default;
+public:
     
+    static Assets& getInstance();
     void addTexture(std::string name, std::string path);
     void addSound(std::string name, std::string path);
     void addAnimation(std::string name, Animation animation);

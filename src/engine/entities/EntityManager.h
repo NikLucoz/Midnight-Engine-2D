@@ -25,10 +25,10 @@ private:
 public:
     static EntityManager& getInstance();
     void update();
-    std::shared_ptr<Entity> addEntity(const std::string& tag, const std::string& sceneName = "", const std::string& entityName = "entity");
+    std::shared_ptr<Entity> addEntity(const std::string& tag, const std::string& entityName = "entity");
 
     template<typename T>
-    std::shared_ptr<T> addEntity(const std::string& tag, const std::string& sceneName = "", const std::string& entityName = "entity");
+    std::shared_ptr<T> addEntity(const std::string& tag, const std::string& entityName = "entity");
     
     EntityVec& getEntities();
     EntityVec& getEntities(const std::string& tag);
@@ -38,10 +38,10 @@ public:
 };
 
 template<typename T>
-std::shared_ptr<T> EntityManager::addEntity(const std::string& tag, const std::string& sceneName, const std::string& entityName)
+std::shared_ptr<T> EntityManager::addEntity(const std::string& tag, const std::string& entityName)
 {
     const size_t id = totalEntities_++;
-    auto entity = std::make_shared<T>(tag, sceneName, id, entityName);
+    auto entity = std::make_shared<T>(tag, id, entityName);
     toAdd_.push_back(entity);
     entitiesIdMap_[id] = entity;
     return entity;

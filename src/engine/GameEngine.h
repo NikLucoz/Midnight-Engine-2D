@@ -6,7 +6,6 @@
 #include <type_traits>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Keyboard.hpp>
-#include "engine/Assets/Assets.h"
 #include "engine/camera/Camera.h"
 #include "engine/editor/engine_ui/DebugUI.h"
 #include "engine/utils/math/Vector2.h"
@@ -20,7 +19,6 @@ class GameEngine
     sf::Clock clock_;
     std::string currentScene_;
     std::unique_ptr<Camera> camera_;
-    std::unique_ptr<Assets> assets_;
     GameConfig gameConfig;
     DebugUI debugUI_;
     bool bIsRunning_;
@@ -59,7 +57,6 @@ class GameEngine
         );
     }
     
-    Assets& getAssets() const;
     Camera& getCamera() const;
     sf::RenderWindow& getWindow();
     const std::string& getCurrentSceneName() const;
