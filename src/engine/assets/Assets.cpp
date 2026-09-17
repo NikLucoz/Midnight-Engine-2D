@@ -1,6 +1,9 @@
 ﻿#include "Assets.h"
 #include "Animation.h"
+#include <fstream>
 #include <stdexcept>
+#include <string>
+#include <vector>
 
 Assets& Assets::getInstance() {
     static Assets instance;
@@ -38,6 +41,14 @@ void Assets::addFont(std::string name, std::string path)
     if (font.openFromFile(path)) {
         fonts_[name] = font;
         fontPaths_[name] = path;
+    }
+}
+
+void Assets::addPrefabDefinition(std::string name, std::string filepath) {
+    prefabs_.emplace(name, std::ifstream(filepath));
+    if (!prefabs_.at(name).is_open()) {
+        prefabs_.erase(name);
+        throw std::runtime_error("Failed to open asset file: " + filepath);
     }
 }
 
@@ -114,4 +125,18 @@ std::vector<std::string> Assets::getFontNames() const
     std::vector<std::string> names;
     for (const auto& [name, font] : fonts_) names.push_back(name);
     return names;
+}
+
+std::ifstream& Assets::getPrefabDefinition(std::string name) {
+    return prefabs_[name];
+}
+
+std::vector<std::string> Assets::getPrefabDefinitions() const {
+    std::vector<std::string> prefabsDef;
+    for (const auto& [name, streams] : prefabs_) prefabsDef.push_back(name);
+    return prefabsDef;
+}
+
+bool Assets::hasPrefabDefinition(std::string name) {
+    return prefabs_.find(name) != prefabs_.end();
 }

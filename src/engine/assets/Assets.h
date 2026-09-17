@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <fstream>
 #include <map>
 #include <string>
 #include <vector>
@@ -15,6 +16,7 @@ class Assets
     std::map<std::string, sf::SoundBuffer> soundBuffers_;
     std::map<std::string, sf::Font> fonts_;
     std::map<std::string, std::string> fontPaths_;
+    std::map<std::string, std::ifstream> prefabs_;
     Assets() = default;
 public:
     
@@ -23,6 +25,7 @@ public:
     void addSound(std::string name, std::string path);
     void addAnimation(std::string name, Animation animation);
     void addFont(std::string name, std::string path);
+    void addPrefabDefinition(std::string name, std::string filePath);
     
     sf::Texture& getTexture(std::string name);
     sf::Sound& getSound(std::string name);
@@ -30,9 +33,12 @@ public:
     const std::string& getFontPath(const std::string& name) const;
     bool hasAnimation(const std::string& name) const;
     Animation& getAnimation(std::string name);
+    std::ifstream& getPrefabDefinition(std::string name);
+    bool hasPrefabDefinition(std::string name);
 
     std::vector<std::string> getTextureNames() const;
     std::vector<std::string> getAnimationNames() const;
     std::vector<std::string> getSoundNames() const;
     std::vector<std::string> getFontNames() const;
+    std::vector<std::string> getPrefabDefinitions() const;
 };

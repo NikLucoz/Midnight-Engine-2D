@@ -14,17 +14,16 @@
 using std::ifstream;
 using std::string;
 
-std::shared_ptr<Entity> PrefabEntityLoader::LoadEntity(const string &prefabFilePath) {
-
-    ifstream file(prefabFilePath);
-    if (!file.is_open()) {
-        throw std::runtime_error("Failed to open asset file: " + prefabFilePath);
+std::shared_ptr<Entity> PrefabEntityLoader::LoadEntity(const string &prefabName) {
+    if (Assets::getInstance().hasPrefabDefinition(prefabName)) {
+        return parseEntity(Assets::getInstance().getPrefabDefinition(prefabName));
     }
 
-    return parseEntity(file);
+    return nullptr;
 }
 
 std::shared_ptr<Entity> PrefabEntityLoader::parseEntity(std::ifstream& file) {
+    string prefabName = "prefab";
     string name = "entity";
     string tag  = "default";
 
@@ -59,6 +58,11 @@ std::shared_ptr<Entity> PrefabEntityLoader::parseEntity(std::ifstream& file) {
                 );
                 continue;
             }
+        }
+
+        if(tokens[0] == "PREFAB_NAME") {
+            prefabName = tokens[1];
+            continue;
         }
 
         if (tokens[0] == "NAME") {

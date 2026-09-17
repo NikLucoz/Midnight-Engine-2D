@@ -50,6 +50,8 @@ void AssetsLoader::loadAssetsFromFile(const std::string &filePath)
             Assets::getInstance().addAnimation(assetName, animation);
         } else if (assetType == "Font") {
             Assets::getInstance().addFont(assetName, assetPath);
+        } else if (assetType == "Prefab") {
+            Assets::getInstance().addPrefabDefinition(assetName, assetPath);
         } else {
             std::cerr << "Unknown asset type: " << assetType << std::endl;
         }
