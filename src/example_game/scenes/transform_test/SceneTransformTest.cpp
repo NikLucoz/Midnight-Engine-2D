@@ -9,7 +9,7 @@
 #include "engine/entities/EntityManager.h"
 
 
-SceneTransformTest::SceneTransformTest(GameEngine *gameEngine) : Scene(gameEngine) {
+SceneTransformTest::SceneTransformTest(GameEngine *gameEngine) : Scene(gameEngine, nullptr) {
     registerAction(InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::W), "Move_Up");
     registerAction(InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::S), "Move_Down");
     registerAction(InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::A), "Move_Left");

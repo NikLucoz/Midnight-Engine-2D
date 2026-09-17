@@ -10,7 +10,8 @@ class GameEngine;
 enum class InputDevice
 {
     Keyboard,
-    MouseButton
+    MouseButton,
+    Gamepad
 };
 
 struct InputBinding
@@ -40,7 +41,7 @@ class Scene
     std::unique_ptr<IRenderingSystem> renderingSystem_;
 
 public:
-    explicit Scene(GameEngine* gameEngine);
+    explicit Scene(GameEngine* gameEngine, std::unique_ptr<IRenderingSystem> renderingSytem);
     virtual void init() = 0;
     virtual void destroy() = 0;
     virtual void update(float dt) = 0;

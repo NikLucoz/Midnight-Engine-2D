@@ -13,7 +13,7 @@
 #include <engine/utils/assets/TileMapLoader.h>
 #include <engine/utils/physics/Raycast2D.h>
 
-ScenePlay::ScenePlay(GameEngine* gameEngine, float enemySpawnTime) : Scene(gameEngine), enemySpawnMaxTime(enemySpawnTime)
+ScenePlay::ScenePlay(GameEngine* gameEngine, float enemySpawnTime) : Scene(gameEngine, nullptr), enemySpawnMaxTime(enemySpawnTime)
 {
     elapsedTimeSinceLastEnemySpawn_ = enemySpawnTime;
     registerAction(InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::W), "Move_Up");
