@@ -1,5 +1,11 @@
 # Midnight Engine Guide
 
+## What is Midnight Engine?
+
+Midnight Engine is a simple 2D Game Engine written in C++ that uses ECS Architecture (Entity Component System).
+It was made to better learn C++ and understand how game engines work internally. Part of the architecture resembles what is shown in the lessons of Professor Dave Churchill of Memorial University of Newfoundland. I followed the lessons to better understand the fundamentals behind an engine and then expanded its features from there.
+The name "Midnight" comes from the usual hours in which I worked on the engine!
+
 ## Table of Contents
 1. [What is Midnight Engine?](#what-is-midnight-engine)
 2. [How do entities and components work?](#how-do-entities-and-components-work)
@@ -28,12 +34,6 @@
     - [Parent-child positioning](#parent-child-positioning)
 11. [Planned new features](#planned-new-features)
 12. [Info on requirements and building the engine](#info-on-requirements-and-building-the-engine)
-
-## What is Midnight Engine?
-
-Midnight Engine is a simple 2D Game Engine written in C++ that uses ECS Architecture (Entity Component System).
-It was made to better learn C++ and understand how game engines work internally. Part of the architecture resembles what is shown in the lessons of Professor Dave Churchill of Memorial University of Newfoundland. I followed the lessons to better understand the fundamentals behind an engine and then expanded its features from there.
-The name "Midnight" comes from the usual hours in which I worked on the engine!
 
 ## How do entities and components work?
 

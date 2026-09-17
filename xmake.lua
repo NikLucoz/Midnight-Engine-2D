@@ -1,4 +1,4 @@
-set_project("SFMLGameEngine")
+set_project("Midnight Engine 2D")
 
 -- Enable standard build modes (debug, release, releasedbg, etc.)
 add_rules("mode.debug", "mode.release", "mode.releasedbg")
