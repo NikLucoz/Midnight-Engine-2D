@@ -7,7 +7,6 @@
 #include "engine/components/rendering/CShape.h"
 #include "engine/components/rendering/CSprite.h"
 #include "engine/editor/EditorWidgets.h"
-#include "example_game/components/CLifespan.h"
 #include <algorithm>
 #include <imgui.h>
 
@@ -110,14 +109,6 @@ REGISTER_COMPONENT_DRAWER(CAnimatedSprite, "CAnimatedSprite", {
         } else {
             ImGui::TextDisabled("No animation assigned");
         }
-        ImGui::TreePop();
-    }
-});
-
-REGISTER_COMPONENT_DRAWER(CLifespan, "CLifespan", {
-    if (ImGui::TreeNode("CLifespan")) {
-        ImGui::InputFloat("Remaining seconds", &c.remainingSeconds_);
-        ImGui::InputFloat("Total seconds", &c.lifespanSeconds_);
         ImGui::TreePop();
     }
 });

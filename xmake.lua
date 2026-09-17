@@ -37,11 +37,11 @@ add_packages("sfml", "imgui-sfml")
 if is_plat("windows") then
     add_syslinks("opengl32", "gdi32", "user32", "advapi32", "winmm", "ws2_32")
 end
+
 -- Copy assets post-build
-
 after_build(function (target)
-    local src_assets = path.join(target:scriptdir(), "src/example_game/game_data/**")
-    local dst_assets = path.join(target:targetdir(), "game/")
-    os.cp(src_assets, dst_assets)
+    local src_assets = path.join(target:scriptdir(), "src/example_game/game_data")
+    local dst_assets = path.join(target:targetdir(), "game")
+    os.mkdir(dst_assets)
+    os.cp(path.join(src_assets, "*"), dst_assets)
 end)
-

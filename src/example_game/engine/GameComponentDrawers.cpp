@@ -1,5 +1,6 @@
 #include "engine/editor/components_registry/ComponentDrawerRegistry.h"
 #include "example_game/components/CInput.h"
+#include "example_game/components/CLifespan.h"
 #include "example_game/components/CSpecialBullet.h"
 #include <imgui.h>
 
@@ -20,6 +21,14 @@ REGISTER_COMPONENT_DRAWER(CInput, "CInput", {
 REGISTER_COMPONENT_DRAWER(CSpecialBullet, "CSpecialBullet", {
     if (ImGui::TreeNode("CSpecialBullet")) {
         ImGui::InputFloat("Oscillation time", &c.oscillationTime);
+        ImGui::TreePop();
+    }
+});
+
+REGISTER_COMPONENT_DRAWER(CLifespan, "CLifespan", {
+    if (ImGui::TreeNode("CLifespan")) {
+        ImGui::InputFloat("Remaining seconds", &c.remainingSeconds_);
+        ImGui::InputFloat("Total seconds", &c.lifespanSeconds_);
         ImGui::TreePop();
     }
 });

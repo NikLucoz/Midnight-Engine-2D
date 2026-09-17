@@ -53,7 +53,13 @@ void drawColor(const char *label, sf::Color &color) {
     float values[4] = {color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.0f};
 
     if (ImGui::ColorEdit4(label, values)) {
-        color = sf::Color(static_cast<std::uint8_t>(values[0] * 255.0f), static_cast<std::uint8_t>(values[1] * 255.0f), static_cast<std::uint8_t>(values[2] * 255.0f),
-                          static_cast<std::uint8_t>(values[3] * 255.0f));
+        color = sf::Color(
+            static_cast<std::uint8_t>(values[0] * 255.0f), 
+            static_cast<std::uint8_t>(values[1] * 255.0f), 
+            static_cast<std::uint8_t>(values[2] * 255.0f),
+            static_cast<std::uint8_t>(values[3] * 255.0f)
+        );
+
+        
     }
 }
