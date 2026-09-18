@@ -80,9 +80,6 @@ xmake version 3.1.1+HEAD.3ba37a0d4
     <ClInclude Include="$(XmakeProjectDir)\src\engine\components\Component.h">
       <Filter>src\engine\components</Filter>
     </ClInclude>
-    <ClInclude Include="$(XmakeProjectDir)\src\engine\entities\EPlayer.h">
-      <Filter>src\engine\entities</Filter>
-    </ClInclude>
     <ClInclude Include="$(XmakeProjectDir)\src\engine\entities\Entity.h">
       <Filter>src\engine\entities</Filter>
     </ClInclude>
@@ -126,9 +123,6 @@ xmake version 3.1.1+HEAD.3ba37a0d4
     </ClCompile>
     <ClCompile Include="$(XmakeProjectDir)\src\engine\components\CSprite.cpp">
       <Filter>src\engine\components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(XmakeProjectDir)\src\engine\entities\EPlayer.cpp">
-      <Filter>src\engine\entities</Filter>
     </ClCompile>
     <ClCompile Include="$(XmakeProjectDir)\src\engine\entities\Entity.cpp">
       <Filter>src\engine\entities</Filter>

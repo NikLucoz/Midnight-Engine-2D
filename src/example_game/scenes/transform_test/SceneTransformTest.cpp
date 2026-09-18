@@ -7,6 +7,8 @@
 #include "engine/components/CTransform.h"
 #include "engine/components/rendering/CShape.h"
 #include "engine/entities/EntityManager.h"
+#include "engine/entities/PrefabEntityLoader.h"
+#include "example_game/components/CInput.h"
 
 
 SceneTransformTest::SceneTransformTest(GameEngine *gameEngine) : Scene(gameEngine, nullptr) {
@@ -21,10 +23,9 @@ void SceneTransformTest::init() {
     const std::string &sceneName = gameEngine_->getCurrentSceneName();
     const Vec2f center = gameEngine_->getCamera().getPosition();
 
-    player_ = EntityManager::getInstance().addEntity<EPlayer>("player", "TransformTestPlayer");
+    player_ = PrefabEntityLoader::LoadEntity("PlayerPrefab");
     player_->setSceneName(sceneName);
     player_->getComponent<CTransform>().position = center;
-    player_->startPosition = center;
     player_->getComponent<CRenderable>().setRenderLayer(1);
     player_->getComponent<CRenderable>().setOrderInLayer(999);
     gameEngine_->getCamera().setTarget(center);

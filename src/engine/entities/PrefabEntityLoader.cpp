@@ -14,12 +14,15 @@
 using std::ifstream;
 using std::string;
 
-std::shared_ptr<Entity> PrefabEntityLoader::LoadEntity(const string &prefabName) {
-    if (Assets::getInstance().hasPrefabDefinition(prefabName)) {
-        return parseEntity(Assets::getInstance().getPrefabDefinition(prefabName));
+std::shared_ptr<Entity> PrefabEntityLoader::LoadEntity(const std::string& prefabName)
+{
+    auto& assets = Assets::getInstance();
+
+    if (!assets.hasPrefabDefinition(prefabName)) {
+        throw std::runtime_error("Prefab not found: \"" + prefabName + "\"");
     }
 
-    return nullptr;
+    return parseEntity(assets.getPrefabDefinition(prefabName));
 }
 
 std::shared_ptr<Entity> PrefabEntityLoader::parseEntity(std::ifstream& file) {

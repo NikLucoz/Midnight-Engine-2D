@@ -3,10 +3,13 @@
 #include <imgui.h>
 #include <SFML/Graphics.hpp>
 #include "engine/actions/Action.h"
+#include "engine/components/collision/CBoundingBox.h"
 #include "engine/components/collision/CCircleCollider.h"
 #include "engine/components/rendering/CRenderable.h"
+#include "engine/entities/Entity.h"
 #include "engine/entities/EntityManager.h"
-#include "example_game/entities/EPlayer.h"
+#include "engine/entities/PrefabEntityLoader.h"
+#include "example_game/components/CInput.h"
 #include "example_game/components/CLifespan.h"
 #include "example_game/components/CSpecialBullet.h"
 #include "engine/utils/physics/CollisionUtils.h"
@@ -36,10 +39,9 @@ void ScenePlay::init()
         cameraPosition.y
     );
 
-    player_ = EntityManager::getInstance().addEntity<EPlayer>("player", "PlayerEntity");
+    player_ = PrefabEntityLoader::LoadEntity("PlayerPrefab");
     player_->setSceneName(gameEngine_->getCurrentSceneName());
     player_->getComponent<CTransform>().position = startPos;
-    player_->startPosition = startPos;
     gameEngine_->getCamera().setTarget(startPos);
     gameEngine_->getCamera().setFollowSmoothing(10.0f);
 
@@ -274,7 +276,6 @@ void ScenePlay::sCollision()
         {
             spawnEnemyDeathParticles(enemy.get());
             enemy->destroy();
-            pTransform.position = player_->startPosition;
             break;
         }
 

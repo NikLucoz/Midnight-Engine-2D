@@ -24,8 +24,8 @@ void MainMenuScene::init()
     card->addComponent<CTransform>(Vec2f(100, 100), Vec2f(0,0), 0, Vec2f(1,1));
     card->addRenderable<CSprite>(Assets::getInstance().getTexture("fireballCardTexture"), Vec2f(200, 400), Vec2f(0,0));
 
-    const auto& player = PrefabEntityLoader::LoadEntity("PlayerPrefab");
-    player->setSceneName(gameEngine_->getCurrentSceneName());
+    //const auto& player = PrefabEntityLoader::LoadEntity("playerEntity");
+    //player->setSceneName(gameEngine_->getCurrentSceneName());
 }
 
 void MainMenuScene::destroy()

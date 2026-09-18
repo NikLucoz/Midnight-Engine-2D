@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include "engine/components/ComponentManager.h"
 #include "engine/entities/EntityManager.h"
 #include <algorithm>
 #include <cstddef>
@@ -34,6 +35,8 @@ void Entity::destroy()
             child->destroy();
         }
     }
+
+    ComponentManager::getInstance().removeEntityComponents(id_);
 }
 
 const std::string& Entity::getTag() const

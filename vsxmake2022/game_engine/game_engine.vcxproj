@@ -155,7 +155,6 @@ PYTHONPATH=C:\Users\lucoz\AppData\Local\.xmake\packages\p\python\3.14.3\a5aba9c0
     <ClInclude Include="$(XmakeProjectDir)\src\engine\components\CSprite.h" />
     <ClInclude Include="$(XmakeProjectDir)\src\engine\components\CTransform.h" />
     <ClInclude Include="$(XmakeProjectDir)\src\engine\components\Component.h" />
-    <ClInclude Include="$(XmakeProjectDir)\src\engine\entities\EPlayer.h" />
     <ClInclude Include="$(XmakeProjectDir)\src\engine\entities\Entity.h" />
     <ClInclude Include="$(XmakeProjectDir)\src\engine\entities\EntityManager.h" />
     <ClInclude Include="$(XmakeProjectDir)\src\engine\systems\CollisionSystem.h" />
@@ -187,9 +186,7 @@ PYTHONPATH=C:\Users\lucoz\AppData\Local\.xmake\packages\p\python\3.14.3\a5aba9c0
     <ClCompile Include="$(XmakeProjectDir)\src\engine\components\CSprite.cpp">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="$(XmakeProjectDir)\src\engine\entities\EPlayer.cpp">
-      <CompileAs>CompileAsCpp</CompileAs>
-    </ClCompile>
+
     <ClCompile Include="$(XmakeProjectDir)\src\engine\entities\Entity.cpp">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>

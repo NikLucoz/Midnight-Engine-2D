@@ -1,11 +1,11 @@
 #pragma once
 
+#include "engine/entities/Entity.h"
 #include "engine/scenes/Scene.h"
-#include "example_game/entities/EPlayer.h"
 
 class SceneTransformTest : public Scene
 {
-    std::shared_ptr<EPlayer> player_;
+    std::shared_ptr<Entity> player_;
     std::shared_ptr<Entity> transformParent_;
 
 public:
