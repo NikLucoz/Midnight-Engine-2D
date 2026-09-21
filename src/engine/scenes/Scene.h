@@ -30,5 +30,4 @@ public:
     void defaultEntityRender(float dt);
     void simulate(int);
     void doAction(const Action& action);
-    void registerAction(InputDevice device, int code, const std::string& actionName);
 };

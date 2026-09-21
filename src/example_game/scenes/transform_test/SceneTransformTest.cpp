@@ -11,11 +11,7 @@
 
 
 SceneTransformTest::SceneTransformTest(GameEngine *gameEngine) : Scene(gameEngine, nullptr) {
-    registerAction(InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::W), "Move_Up");
-    registerAction(InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::S), "Move_Down");
-    registerAction(InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::A), "Move_Left");
-    registerAction(InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::D), "Move_Right");
-    registerAction(InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::Escape), "Back_To_Menu");
+
 }
 
 void SceneTransformTest::init() {
@@ -104,18 +100,5 @@ void SceneTransformTest::sRender(float dt) {
 void SceneTransformTest::sDebug() {}
 
 void SceneTransformTest::sDoAction(const Action &action) {
-    if (action.name() == "Move_Up")
-        player_->getComponent<CInput>().bUp = action.type() == "pressed";
 
-    if (action.name() == "Move_Down")
-        player_->getComponent<CInput>().bDown = action.type() == "pressed";
-
-    if (action.name() == "Move_Left")
-        player_->getComponent<CInput>().bLeft = action.type() == "pressed";
-
-    if (action.name() == "Move_Right")
-        player_->getComponent<CInput>().bRight = action.type() == "pressed";
-
-    if (action.name() == "Back_To_Menu" && action.type() == "pressed")
-        gameEngine_->changeScene("main_menu_scene");
 }

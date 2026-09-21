@@ -7,32 +7,52 @@
 #include <map>
 #include <optional>
 #include <string>
+#include <vector>
 
-enum class InputDevice { Keyboard, MouseButton, Gamepad };
+enum class InputDevice { Keyboard, MouseButton, GamepadButton, GamepadAxis };
 
 struct InputBinding {
     InputDevice device;
-    int code;
+    int code;       // key / button / axis_id
+    int player = 0; // joystick id (0, 1, …)
 
-    bool operator<(const InputBinding &other) const {
-        if (device != other.device)
-            return device < other.device;
+    // Axis options (ignored for buttons/keys)
+    float deadzone = 0.15f;
+    bool invert = false;
+    float sensitivity = 1.0f;
 
-        return code < other.code;
+    bool operator<(const InputBinding &o) const {
+        if (device != o.device)
+            return device < o.device;
+        if (code != o.code)
+            return code < o.code;
+        return player < o.player;
     }
+};
+
+struct Axis2DBinding {
+    InputBinding x;
+    InputBinding y;
+    std::string actionName;
 };
 
 class Scene;
 
 using SceneBindingMap = std::map<InputBinding, std::string>;
 using SceneRegistry = std::map<const Scene *, SceneBindingMap>;
+using Axis2DRegistry = std::map<const Scene *, std::vector<Axis2DBinding>>;
 
 class InputManager {
   private:
     InputManager() = default;
-    SceneRegistry sceneRegistry_;
 
-    std::optional<Action> resolveInput(const Scene *scene, InputBinding binding, const std::string &actionType, Vector2<int> pos = {0, 0});
+    SceneRegistry sceneRegistry_;
+    Axis2DRegistry axis2DRegistry_;
+    std::map<InputBinding, bool> previousDigitalState_;
+
+    std::optional<Action> resolveDigital(const Scene *scene, InputBinding binding, bool currentlyDown, Vector2<int> pos = {0, 0});
+
+    float processAxis(float raw, const InputBinding &b) const;
 
   public:
     static InputManager &getInstance() {
@@ -40,17 +60,14 @@ class InputManager {
         return instance;
     }
 
-    void registerAction(const Scene *scene, InputDevice device, int code, const std::string &actionName) { sceneRegistry_[scene][{device, code}] = actionName; }
+    void registerAction(const Scene *scene, InputDevice device, int code, const std::string &actionName, int player = 0);
 
-    bool hasActionMappedForScene(const Scene *scene, const std::string &actionName) const {
-        auto sceneIt = sceneRegistry_.find(scene);
-        if (sceneIt == sceneRegistry_.end())
-            return false;
-        for (const auto &[binding, name] : sceneIt->second)
-            if (name == actionName)
-                return true;
-        return false;
-    }
+    void registerAxis1D(const Scene *scene, int axisId, const std::string &actionName, int player = 0, float deadzone = 0.15f, bool invert = false, float sensitivity = 1.0f);
+
+    void registerAxis2D(const Scene *scene, int xAxisId, int yAxisId, const std::string &actionName, int player = 0, float deadzone = 0.15f, bool invertX = false, bool invertY = false, float sensitivity = 1.0f);
+
+    bool hasActionMappedForScene(const Scene *scene, const std::string &actionName) const;
 
     void processEvent(std::optional<sf::Event> event, Scene *scene, DebugUI &debugUI);
+    void update(Scene *scene);
 };

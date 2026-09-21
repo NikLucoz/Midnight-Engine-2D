@@ -49,14 +49,14 @@ The engine's name comes from the hours I usually worked on it. Since I often wor
 
 ## How do entities and components work?
 
-An `Entity` is just a container of components. Internally it holds an `unordered_map` keyed by `std::type_index`, so each component type can appear at most once per entity.
+An `Entity` represents any object in a scene. Conceptually it aggregates different components, although the components themselves are stored and managed by a `ComponentManager`. Each entity can hold only one component of a given type. If you need multiple components of the same type, you must create child entities.
 
 You interact with components through these template methods on `Entity`:
 
 ```cpp
 entity->addComponent<CTransform>(position, velocity, rotation, scale);
 entity->hasComponent<CTransform>();     // returns bool
-entity->getComponent<CTransform>();     // returns T& (asserts if missing)
+entity->getComponent<CTransform>();     // returns T&
 entity->removeComponent<CTransform>();
 ```
 
@@ -89,6 +89,22 @@ EntityManager::getInstance().getEntities("enemy");      // by tag
 EntityManager::getInstance().getEntitiesInScene("play");
 EntityManager::getInstance().getEntityWithId(id);
 ```
+
+You manage the entity hierarchy through these methods on Entity:
+```cpp
+C++entity->addChild(child);     // adds child
+entity->removeChild(child);     // removes child and clears its parent
+entity->hasChild(child);        // returns bool
+entity->hasChild(id);           // same, by id
+
+entity->getChildrens();         // returns const std::vector<size_t>&
+entity->getParent();            // returns parent id (-1 if none)
+entity->setParent(id);          // sets parent
+
+entity->changeChildOrder(id, index); // moves a child to a new position in the list
+```
+
+addChild automatically removes the child from its previous parent (if any). Adding an entity as a child of one of its own descendants is ignored to avoid cycles.
 
 ---
 

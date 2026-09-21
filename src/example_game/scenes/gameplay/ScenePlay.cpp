@@ -1,42 +1,45 @@
 ﻿#include "ScenePlay.h"
 
-#include <imgui.h>
-#include <SFML/Graphics.hpp>
 #include "engine/components/collision/CBoundingBox.h"
 #include "engine/components/collision/CCircleCollider.h"
 #include "engine/components/rendering/CRenderable.h"
 #include "engine/entities/Entity.h"
 #include "engine/entities/EntityManager.h"
 #include "engine/entities/PrefabEntityLoader.h"
+#include "engine/input/InputManager.h"
+#include "engine/utils/math/Vector2.h"
+#include "engine/utils/physics/CollisionUtils.h"
 #include "example_game/components/CInput.h"
 #include "example_game/components/CLifespan.h"
 #include "example_game/components/CSpecialBullet.h"
-#include "engine/utils/physics/CollisionUtils.h"
+#include <SFML/Graphics.hpp>
 #include <engine/utils/assets/TileMapLoader.h>
 #include <engine/utils/physics/Raycast2D.h>
+#include <imgui.h>
 
-ScenePlay::ScenePlay(GameEngine* gameEngine, float enemySpawnTime) : Scene(gameEngine, nullptr), enemySpawnMaxTime(enemySpawnTime)
-{
+ScenePlay::ScenePlay(GameEngine *gameEngine, float enemySpawnTime) : Scene(gameEngine, nullptr), enemySpawnMaxTime(enemySpawnTime) {
     elapsedTimeSinceLastEnemySpawn_ = enemySpawnTime;
-    registerAction(InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::W), "Move_Up");
-    registerAction(InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::S), "Move_Down");
-    registerAction(InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::A), "Move_Left");
-    registerAction(InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::D), "Move_Right");
-    registerAction(InputDevice::MouseButton, static_cast<int>(sf::Mouse::Button::Left), "Shoot");
-    registerAction(InputDevice::MouseButton, static_cast<int>(sf::Mouse::Button::Right), "SpecialShoot");
+    auto &input = InputManager::getInstance();
+
+    input.registerAction(this, InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::W), "Move_Up");
+    input.registerAction(this, InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::S), "Move_Down");
+    input.registerAction(this, InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::A), "Move_Left");
+    input.registerAction(this, InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::D), "Move_Right");
+    input.registerAction(this, InputDevice::MouseButton, static_cast<int>(sf::Mouse::Button::Left), "Shoot");
+    input.registerAction(this, InputDevice::MouseButton, static_cast<int>(sf::Mouse::Button::Right), "SpecialShoot");
+
+    input.registerAxis2D(this, static_cast<int>(sf::Joystick::Axis::X), static_cast<int>(sf::Joystick::Axis::Y), "Move");
+    input.registerAction(this, InputDevice::GamepadButton, 0, "Shoot");
+    input.registerAction(this, InputDevice::GamepadButton, 1, "SpecialShoot");
 }
 
-void ScenePlay::init()
-{
+void ScenePlay::init() {
     tilemap_ = TileMapLoader::load("game/levels/example_level.cfg");
 
     const sf::Vector2f viewSize = gameEngine_->getCamera().getViewSize();
     const Vec2f cameraPosition = gameEngine_->getCamera().getPosition();
 
-    Vec2f startPos(
-        cameraPosition.x,
-        cameraPosition.y
-    );
+    Vec2f startPos(cameraPosition.x, cameraPosition.y);
 
     player_ = PrefabEntityLoader::LoadEntity("PlayerPrefab");
     player_->setSceneName(gameEngine_->getCurrentSceneName());
@@ -44,40 +47,38 @@ void ScenePlay::init()
     gameEngine_->getCamera().setTarget(startPos);
     gameEngine_->getCamera().setFollowSmoothing(10.0f);
 
-    //const auto& gumba = EntityManager::getInstance().addEntity("enemy");
-    //gumba->addComponent<CTransform>(Vec2f(300.0f, 300.0f), Vec2f(100.0f, 0.0f), 0.0f, Vec2f(6,6));
-    //gumba->addRenderable<CAnimatedSprite>(gameEngine_->getAssets().getAnimation("gumbaWalkingAnimation"));
-    //gumba->addComponent<CBoundingBox>(Vector2<int>(16*6, 16*6));
+    // const auto& gumba = EntityManager::getInstance().addEntity("enemy");
+    // gumba->addComponent<CTransform>(Vec2f(300.0f, 300.0f), Vec2f(100.0f, 0.0f), 0.0f, Vec2f(6,6));
+    // gumba->addRenderable<CAnimatedSprite>(gameEngine_->getAssets().getAnimation("gumbaWalkingAnimation"));
+    // gumba->addComponent<CBoundingBox>(Vector2<int>(16*6, 16*6));
 
     auto e = EntityManager::getInstance().addEntity("enemy", "EnemyRaycastTest");
     e->setSceneName(gameEngine_->getCurrentSceneName());
-    e->addComponent<CTransform>(Vec2f(600, 600), Vec2f(0, 0), 0, Vec2f(1,1));
+    e->addComponent<CTransform>(Vec2f(600, 600), Vec2f(0, 0), 0, Vec2f(1, 1));
     e->addRenderable<CShape>(25, 4, sf::Color::Red, sf::Color::White, 4);
-    e->addComponent<CBoundingBox>(Vector2<int>(50,50));
+    e->addComponent<CBoundingBox>(Vector2<int>(50, 50));
 
     auto e1 = EntityManager::getInstance().addEntity("enemy", "EnemyRaycastTest1");
     e->setSceneName(gameEngine_->getCurrentSceneName());
-    e1->addComponent<CTransform>(Vec2f(620, 600), Vec2f(0, 0), 0, Vec2f(1,1));
+    e1->addComponent<CTransform>(Vec2f(620, 600), Vec2f(0, 0), 0, Vec2f(1, 1));
     e1->addRenderable<CShape>(25, 4, sf::Color::Green, sf::Color::White, 4);
-    e1->addComponent<CBoundingBox>(Vector2<int>(50,50));
+    e1->addComponent<CBoundingBox>(Vector2<int>(50, 50));
 
     auto e2 = EntityManager::getInstance().addEntity("enemy", "EnemyRaycastTest2");
     e->setSceneName(gameEngine_->getCurrentSceneName());
-    e2->addComponent<CTransform>(Vec2f(590, 600), Vec2f(0, 0), 0, Vec2f(1,1));
+    e2->addComponent<CTransform>(Vec2f(590, 600), Vec2f(0, 0), 0, Vec2f(1, 1));
     e2->addRenderable<CShape>(25, 4, sf::Color::Blue, sf::Color::White, 4);
-    e2->addComponent<CBoundingBox>(Vector2<int>(50,50));
+    e2->addComponent<CBoundingBox>(Vector2<int>(50, 50));
 }
 
-void ScenePlay::destroy()
-{
-    for (auto& ePtr : EntityManager::getInstance().getEntitiesInScene(gameEngine_->getCurrentSceneName())) {
-        Entity& e = *ePtr;
+void ScenePlay::destroy() {
+    for (auto &ePtr : EntityManager::getInstance().getEntitiesInScene(gameEngine_->getCurrentSceneName())) {
+        Entity &e = *ePtr;
         e.destroy();
     }
 }
 
-void ScenePlay::update(float dt)
-{
+void ScenePlay::update(float dt) {
     sMovement(dt);
     sCollision();
     sLifespan(dt);
@@ -94,238 +95,227 @@ void ScenePlay::update(float dt)
     */
 }
 
-void ScenePlay::sRender(float dt)
-{   
-    
-    if (!gameEngine_->getDebugOptions().systems.render) return;
-    
-    RenderContext context {
-    gameEngine_->getWindow(),
-    EntityManager::getInstance().getEntities(),
-    gameEngine_->getDebugOptions(),
+void ScenePlay::sRender(float dt) {
+
+    if (!gameEngine_->getDebugOptions().systems.render)
+        return;
+
+    RenderContext context{
+        gameEngine_->getWindow(),
+        EntityManager::getInstance().getEntities(),
+        gameEngine_->getDebugOptions(),
     };
-    
+
     renderingSystem_->renderTilemapLayer(context, tilemap_, "ground");
     renderingSystem_->renderEntities(dt, context);
-    
-    if (gameEngine_->getDebugOptions().showCollisionGeometry) sDebug();
+
+    if (gameEngine_->getDebugOptions().showCollisionGeometry)
+        sDebug();
 }
 
-void ScenePlay::sDoAction(const Action& action)
-{
-    if (action.name() == "Move_Up")
-    {
-        player_->getComponent<CInput>().bUp = action.type() == "pressed" ? true : false;
-    }
-    
-    if (action.name() == "Move_Down")
-    {
-        player_->getComponent<CInput>().bDown = action.type() == "pressed" ? true : false;
-    }
-    
-    if (action.name() == "Move_Left")
-    {
-        player_->getComponent<CInput>().bLeft = action.type() == "pressed" ? true : false;
-    }
-    
-    if (action.name() == "Move_Right")
-    {
-        player_->getComponent<CInput>().bRight = action.type() == "pressed" ? true : false;
-    }
+void ScenePlay::sDoAction(const Action &action) {
+    auto &input = player_->getComponent<CInput>();
 
-    if (action.name() == "Shoot")
-    {
-        player_->getComponent<CInput>().bMouseLeft = action.type() == "pressed" ? true : false;
+    if (action.name() == "Move_Up") {
+        if (action.isPressed()) input.bUp = true;
+        if (action.isReleased()) input.bUp = false;
+    } else if (action.name() == "Move_Down") {
+        if (action.isPressed()) input.bDown = true;
+        if (action.isReleased()) input.bDown = false;
+    } else if (action.name() == "Move_Left") {
+        if (action.isPressed()) input.bLeft = true;
+        if (action.isReleased()) input.bLeft = false;
+    } else if (action.name() == "Move_Right") {
+        if (action.isPressed()) input.bRight = true;
+        if (action.isReleased()) input.bRight = false;
+    } else if (action.name() == "Shoot") {
+        if (action.isPressed()) input.bMouseLeft = true;
+        if (action.isReleased()) input.bMouseLeft = false;
+    } else if (action.name() == "SpecialShoot") {
+        if (action.isPressed()) input.bMouseRight = true;
+        if (action.isReleased()) input.bMouseRight = false;
     }
-    
-    if (action.name() == "SpecialShoot")
-    {
-        player_->getComponent<CInput>().bMouseRight = action.type() == "pressed" ? true : false;
-    }
-}
-
-void ScenePlay::sAnimation(float dt)
-{
-    if (!gameEngine_->getDebugOptions().systems.animation) return;
-
-    for (std::shared_ptr<Entity>& ePtr : EntityManager::getInstance().getEntities())
-    if (ePtr->hasComponent<CAnimatedSprite>()) {
-        auto& cAnimatedSprite = ePtr->getComponent<CAnimatedSprite>();
-        cAnimatedSprite.animation->update(dt); 
+    else if (action.name() == "Move" && action.type() == ActionType::Axis2D) {
+        const Vec2f& v = action.axis2D();
+        input.bUp    = v.y < -0.3f;
+        input.bDown  = v.y >  0.3f;
+        input.bLeft  = v.x < -0.3f;
+        input.bRight = v.x >  0.3f;
     }
 }
 
-void ScenePlay::sMovement(float dt)
-{    
-    if (!gameEngine_->getDebugOptions().systems.movement) return;
+void ScenePlay::sAnimation(float dt) {
+    if (!gameEngine_->getDebugOptions().systems.animation)
+        return;
 
-    if (player_ == nullptr) return;
-   
-    auto& input = player_->getComponent<CInput>();
-    if (input.hasMovementInput())
-    {
-        auto& transform = player_->getComponent<CTransform>();
+    for (std::shared_ptr<Entity> &ePtr : EntityManager::getInstance().getEntities())
+        if (ePtr->hasComponent<CAnimatedSprite>()) {
+            auto &cAnimatedSprite = ePtr->getComponent<CAnimatedSprite>();
+            cAnimatedSprite.animation->update(dt);
+        }
+}
+
+void ScenePlay::sMovement(float dt) {
+    if (!gameEngine_->getDebugOptions().systems.movement)
+        return;
+
+    if (player_ == nullptr)
+        return;
+
+    auto &input = player_->getComponent<CInput>();
+    if (input.hasMovementInput()) {
+        auto &transform = player_->getComponent<CTransform>();
         Vector2<int> movementDirection = input.getMovementDirection();
         transform.position.x += transform.velocity.x * movementDirection.x * dt;
         transform.position.y += transform.velocity.y * movementDirection.y * dt;
     }
 
-    if (!gameEngine_->getDebugOptions().freeCameraActive)
-    {
-        gameEngine_->getCamera().setTarget(
-            player_->getComponent<CTransform>().getPosition()
-        );
+    if (!gameEngine_->getDebugOptions().freeCameraActive) {
+        gameEngine_->getCamera().setTarget(player_->getComponent<CTransform>().getPosition());
     }
-    
+
     std::vector<std::string> tags{"bullet", "enemy"};
     auto movable_entities = EntityManager::getInstance().getEntities(tags);
-    for (auto& e : movable_entities)
-    {
-        if (!e->hasComponent<CTransform>()) continue;
-        auto& transform = e->getComponent<CTransform>();
+    for (auto &e : movable_entities) {
+        if (!e->hasComponent<CTransform>())
+            continue;
+        auto &transform = e->getComponent<CTransform>();
         transform.position.y += transform.velocity.y * dt;
         transform.position.x += transform.velocity.x * dt;
     }
-    
+
     tags = {"specialBullet"};
     auto specialBullets = EntityManager::getInstance().getEntities(tags);
-    for (auto& sb : specialBullets)
-    {
-        if (!sb->hasComponent<CTransform>()) continue;
-        
+    for (auto &sb : specialBullets) {
+        if (!sb->hasComponent<CTransform>())
+            continue;
+
         if (!sb->hasComponent<CSpecialBullet>())
             sb->addComponent<CSpecialBullet>();
-    
-        auto& bulletData = sb->getComponent<CSpecialBullet>();
+
+        auto &bulletData = sb->getComponent<CSpecialBullet>();
         bulletData.oscillationTime += dt;
         float oscillationAmplitude = 15.0f;
-        
+
         float sinValue = std::sin(bulletData.oscillationTime * 8.0f);
-        
-        auto& transform = sb->getComponent<CTransform>();
+
+        auto &transform = sb->getComponent<CTransform>();
         float velocityMagnitude = transform.velocity.magnitude();
-    
-        if (velocityMagnitude > 0.0f)
-        {
+
+        if (velocityMagnitude > 0.0f) {
             float dirX = transform.velocity.x / velocityMagnitude;
             float dirY = transform.velocity.y / velocityMagnitude;
-            
+
             // per applicare l'oscillazione del sin devo ruotare di 90° in senso orario
             Vec2f rotatedDirection = Vec2f(dirY, -dirX);
             Vec2f oscillation = rotatedDirection * oscillationAmplitude * sinValue;
-            
+
             transform.position.x += oscillation.x + transform.velocity.x * dt;
             transform.position.y += oscillation.y + transform.velocity.y * dt;
         }
     }
 }
 
-void ScenePlay::sEnemySpawner(float dt)
-{
-    if (!gameEngine_->getDebugOptions().systems.enemySpawner) return;
+void ScenePlay::sEnemySpawner(float dt) {
+    if (!gameEngine_->getDebugOptions().systems.enemySpawner)
+        return;
 
     elapsedTimeSinceLastEnemySpawn_ -= dt;
     if (elapsedTimeSinceLastEnemySpawn_ <= 0.0f) {
-        srand(time(0)*dt);
+        srand(time(0) * dt);
         float randomX = static_cast<float>(rand() % gameEngine_->getWindow().getSize().x);
-        float randomY = static_cast<float>(rand() %  gameEngine_->getWindow().getSize().y);
+        float randomY = static_cast<float>(rand() % gameEngine_->getWindow().getSize().y);
         float randomAngle = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.0f * 3.14f;
 
         float speed = 300.0f;
         float velX = std::cos(randomAngle) * speed;
         float velY = std::sin(randomAngle) * speed;
-        
+
         int randomPoints = 3 + rand() % (6 + 1);
-        
+
         int r = rand() % 255;
         int g = rand() % 255;
         int b = rand() % 255;
 
         auto e = EntityManager::getInstance().addEntity("enemy", "MovingEnemy");
         e->setSceneName(gameEngine_->getCurrentSceneName());
-        e->addComponent<CTransform>(Vec2f(randomX, randomY), Vec2f(velX, velY), 0, Vec2f(1,1));
+        e->addComponent<CTransform>(Vec2f(randomX, randomY), Vec2f(velX, velY), 0, Vec2f(1, 1));
         e->addRenderable<CShape>(25, randomPoints, sf::Color(r, g, b), sf::Color::White, 4);
-        e->addComponent<CBoundingBox>(Vector2<int>(50,50));
+        e->addComponent<CBoundingBox>(Vector2<int>(50, 50));
 
         elapsedTimeSinceLastEnemySpawn_ = enemySpawnMaxTime;
     }
 }
 
-void ScenePlay::sCollision()
-{
-    if (!gameEngine_->getDebugOptions().systems.collision) return;
+void ScenePlay::sCollision() {
+    if (!gameEngine_->getDebugOptions().systems.collision)
+        return;
 
-    auto& enemies = EntityManager::getInstance().getEntities("enemy");
-    
+    auto &enemies = EntityManager::getInstance().getEntities("enemy");
+
     std::vector<std::string> tags{"bullet", "specialBullet"};
     auto bullets = EntityManager::getInstance().getEntities(tags);
-    
-    if (player_ == nullptr) return;
-    
-    auto& pTransform = player_->getComponent<CTransform>();
-    auto& pCollider = player_->getComponent<CBoundingBox>();
-    
-    for (auto& enemy : enemies)
-    {
-        if (!enemy->hasComponent<CTransform>() || !enemy->hasComponent<CBoundingBox>()) continue;
 
-        auto& eTransform = enemy->getComponent<CTransform>();
-        auto& eBoundingBox = enemy->getComponent<CBoundingBox>();
-        if (IsColliding(player_.get(), enemy.get()))
-        {
+    if (player_ == nullptr)
+        return;
+
+    auto &pTransform = player_->getComponent<CTransform>();
+    auto &pCollider = player_->getComponent<CBoundingBox>();
+
+    for (auto &enemy : enemies) {
+        if (!enemy->hasComponent<CTransform>() || !enemy->hasComponent<CBoundingBox>())
+            continue;
+
+        auto &eTransform = enemy->getComponent<CTransform>();
+        auto &eBoundingBox = enemy->getComponent<CBoundingBox>();
+        if (IsColliding(player_.get(), enemy.get())) {
             spawnEnemyDeathParticles(enemy.get());
             enemy->destroy();
             break;
         }
 
-        for (auto& bullet : bullets)
-        {
-            if (!bullet->hasComponent<CTransform>() ||
-                !bullet->hasComponent<CBoundingBox>()) continue;
+        for (auto &bullet : bullets) {
+            if (!bullet->hasComponent<CTransform>() || !bullet->hasComponent<CBoundingBox>())
+                continue;
 
-            auto& bTransform = bullet->getComponent<CTransform>();
-            
-            if (IsColliding(enemy.get(), bullet.get()))
-            {
+            auto &bTransform = bullet->getComponent<CTransform>();
+
+            if (IsColliding(enemy.get(), bullet.get())) {
                 spawnEnemyDeathParticles(enemy.get());
                 enemy->destroy();
                 bullet->destroy();
                 break;
             }
         }
-        
-        if (eTransform.getPosition().x - eBoundingBox.size.x < 0 ||
-            eTransform.getPosition().x + eBoundingBox.size.x > gameEngine_->getWindow().getSize().x)
-        {
+
+        if (eTransform.getPosition().x - eBoundingBox.size.x < 0 || eTransform.getPosition().x + eBoundingBox.size.x > gameEngine_->getWindow().getSize().x) {
             eTransform.velocity = eTransform.velocity.reflectionVector({1.0f, 0.0f});
         }
-        
+
         // Horizontal wall collision
-        if (eTransform.getPosition().y - eBoundingBox.size.y < 0 ||
-            eTransform.getPosition().y + eBoundingBox.size.y > gameEngine_->getWindow().getSize().y)
-        {
+        if (eTransform.getPosition().y - eBoundingBox.size.y < 0 || eTransform.getPosition().y + eBoundingBox.size.y > gameEngine_->getWindow().getSize().y) {
             eTransform.velocity = eTransform.velocity.reflectionVector({0.0f, 1.0f});
         }
     }
 }
 
-void ScenePlay::sLifespan(float dt)
-{
-    if (!gameEngine_->getDebugOptions().systems.lifespan) return;
+void ScenePlay::sLifespan(float dt) {
+    if (!gameEngine_->getDebugOptions().systems.lifespan)
+        return;
 
-    auto& entities = EntityManager::getInstance().getEntities();
-    
-    for (auto& entity : entities)
-    {
-        if (!entity->hasComponent<CLifespan>()) continue;
-        CLifespan& cLifespan = entity->getComponent<CLifespan>();
+    auto &entities = EntityManager::getInstance().getEntities();
+
+    for (auto &entity : entities) {
+        if (!entity->hasComponent<CLifespan>())
+            continue;
+        CLifespan &cLifespan = entity->getComponent<CLifespan>();
         cLifespan.remainingSeconds_ -= dt;
         if (cLifespan.remainingSeconds_ <= 0) {
             cLifespan.remainingSeconds_ = 0;
         }
 
         if (entity->hasComponent<CShape>()) {
-            CShape& cShape = entity->getComponent<CShape>();
+            CShape &cShape = entity->getComponent<CShape>();
             uint8_t alpha = (cLifespan.remainingSeconds_ / cLifespan.lifespanSeconds_) * 255;
             cShape.fillColor_.a = alpha;
             cShape.outlineColor_.a = alpha;
@@ -333,25 +323,21 @@ void ScenePlay::sLifespan(float dt)
             cShape.getShape()->setOutlineColor(cShape.outlineColor_);
         }
 
-        if (cLifespan.remainingSeconds_ <= 0)
-        {
+        if (cLifespan.remainingSeconds_ <= 0) {
             entity->destroy();
         }
     }
 }
 
-void ScenePlay::spawnEnemyDeathParticles(Entity* enemy)
-{
-    if (enemy->hasComponent<CShape>())
-    {
-        auto& cShape = enemy->getComponent<CShape>();
-        auto& eTransform = enemy->getComponent<CTransform>();
+void ScenePlay::spawnEnemyDeathParticles(Entity *enemy) {
+    if (enemy->hasComponent<CShape>()) {
+        auto &cShape = enemy->getComponent<CShape>();
+        auto &eTransform = enemy->getComponent<CTransform>();
 
         float angleStep = 360.0f / cShape.point_count_;
-        for (int i = 0; i < cShape.point_count_; ++i)
-        {
+        for (int i = 0; i < cShape.point_count_; ++i) {
             float angle = i * angleStep;
-            angle += angleStep/2;
+            angle += angleStep / 2;
             float radiandAngles = sf::degrees(angle).asRadians();
             auto velX = std::cosf(radiandAngles) * 300;
             auto velY = -1 * std::sinf(radiandAngles) * 300;
@@ -360,23 +346,19 @@ void ScenePlay::spawnEnemyDeathParticles(Entity* enemy)
             enemyParticle->setSceneName(gameEngine_->getCurrentSceneName());
             enemyParticle->addRenderable<CShape>(10, cShape.point_count_, cShape.fillColor_, cShape.outlineColor_, 2);
             enemyParticle->addComponent<CLifespan>(0.4);
-            enemyParticle->addComponent<CTransform>(eTransform.getPosition(), Vec2f(velX, velY), eTransform.getRotation(), Vec2f(1,1));
+            enemyParticle->addComponent<CTransform>(eTransform.getPosition(), Vec2f(velX, velY), eTransform.getRotation(), Vec2f(1, 1));
         }
     }
 }
 
-void ScenePlay::sDebug()
-{
-    for (std::shared_ptr<Entity>& ePtr : EntityManager::getInstance().getEntities())
-    {
-        Entity& e = *ePtr;
-        if (e.hasComponent<CTransform>())
-        {
-            CTransform& transform = e.getComponent<CTransform>();
+void ScenePlay::sDebug() {
+    for (std::shared_ptr<Entity> &ePtr : EntityManager::getInstance().getEntities()) {
+        Entity &e = *ePtr;
+        if (e.hasComponent<CTransform>()) {
+            CTransform &transform = e.getComponent<CTransform>();
             Vec2f pos = transform.getPosition();
-            if (e.hasComponent<CCircleCollider>())
-            {
-                CCircleCollider& c = e.getComponent<CCircleCollider>();
+            if (e.hasComponent<CCircleCollider>()) {
+                CCircleCollider &c = e.getComponent<CCircleCollider>();
                 sf::CircleShape sfShape(c.radius_);
                 sfShape.setPointCount(20);
                 sfShape.setPosition(sf::Vector2f(pos.x, pos.y));
@@ -386,21 +368,20 @@ void ScenePlay::sDebug()
                 sfShape.setOutlineThickness(2);
                 gameEngine_->getWindow().draw(sfShape);
             }
-            
-            if (gameEngine_->getDebugOptions().showCollisionGeometry && e.hasComponent<CBoundingBox>())
-            {
-                CBoundingBox& b = e.getComponent<CBoundingBox>();
+
+            if (gameEngine_->getDebugOptions().showCollisionGeometry && e.hasComponent<CBoundingBox>()) {
+                CBoundingBox &b = e.getComponent<CBoundingBox>();
                 sf::RectangleShape sfShape;
                 sfShape.setOutlineColor(sf::Color::Green);
                 sfShape.setOutlineThickness(2);
                 sfShape.setFillColor(sf::Color::Transparent);
-                sfShape.setPosition(sf::Vector2f(pos.x - b.size.x/2, pos.y - b.size.y/2));
+                sfShape.setPosition(sf::Vector2f(pos.x - b.size.x / 2, pos.y - b.size.y / 2));
                 sfShape.setSize(sf::Vector2f(b.size.x, b.size.y));
                 gameEngine_->getWindow().draw(sfShape);
             }
         }
     }
-    
+
     /*
     const auto& player_pos = player_->getComponent<CTransform>().getPosition();
     const Vec2f end = player_pos + Vec2f::RIGHT() * 100.0f;
@@ -413,14 +394,12 @@ void ScenePlay::sDebug()
     */
 }
 
-void ScenePlay::sDebugUI()
-{
+void ScenePlay::sDebugUI() {
     ImGui::Text("Gameplay scene");
     ImGui::TextDisabled("Toggle runtime systems without restarting the scene.");
     ImGui::Separator();
 
-    if (ImGui::CollapsingHeader("Systems", ImGuiTreeNodeFlags_DefaultOpen))
-    {
+    if (ImGui::CollapsingHeader("Systems", ImGuiTreeNodeFlags_DefaultOpen)) {
         ImGui::Checkbox("Movement system", &gameEngine_->getDebugOptions().systems.movement);
         ImGui::Checkbox("Collision system", &gameEngine_->getDebugOptions().systems.collision);
         ImGui::Checkbox("Lifespan system", &gameEngine_->getDebugOptions().systems.lifespan);

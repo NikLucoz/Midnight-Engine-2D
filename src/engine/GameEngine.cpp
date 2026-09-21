@@ -100,6 +100,7 @@ void GameEngine::quit() {
 }
 
 void GameEngine::handleEvents() {
+    auto& inputManager = InputManager::getInstance();
     while (auto event = window_.pollEvent()) {
         debugUI_.ProcessEvent(*event);
 
@@ -110,8 +111,9 @@ void GameEngine::handleEvents() {
         if (const auto *resized = event->getIf<sf::Event::Resized>()) {
             handleResize(resized->size.x, resized->size.y);
         }
-
-        InputManager::getInstance().processEvent(event, getCurrentScene(), debugUI_);
+        
+        inputManager.update(getCurrentScene());
+        inputManager.processEvent(event, getCurrentScene(), debugUI_);
     }
 }
 

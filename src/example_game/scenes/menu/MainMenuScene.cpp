@@ -10,10 +10,6 @@
 #include "engine/utils/math/Vector2.h"
 
 MainMenuScene::MainMenuScene(GameEngine* gameEngine) : Scene(gameEngine, nullptr) {
-    registerAction(InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::Enter), "UI_Enter");
-    registerAction(InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::Escape), "UI_Escape");
-    registerAction(InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::Up), "UI_Up");
-    registerAction(InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::Down), "UI_Down");
 }
 
 void MainMenuScene::init()

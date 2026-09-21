@@ -10,12 +10,8 @@ Scene::Scene(GameEngine *gameEngine, std::unique_ptr<IRenderingSystem> rendering
     InputManager::getInstance().registerAction(this, InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::F3), "Toggle_Debug_UI");
 }
 
-void Scene::registerAction(InputDevice device, int code, const std::string& actionName) {
-    InputManager::getInstance().registerAction(this, device, code, actionName);
-}
-
 void Scene::doAction(const Action &action) {
-    if (action.name() == "Toggle_Debug_UI" && action.type() == "pressed") {
+    if (action.name() == "Toggle_Debug_UI" && action.isPressed()) {
         gameEngine_->getDebugOptions().showDebugUI = !gameEngine_->getDebugOptions().showDebugUI;
     }
 
