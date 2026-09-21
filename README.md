@@ -484,7 +484,6 @@ I'm planning to keep working on this engine to add some useful additions and hop
 - Adding Tile painting from engine view (debug mode with F3)
 - Adding Trigger collider components
 - Adding generated collision geometry for tilemaps
-- Adding Gamepad support
 - Better editor view and tools (Entity creator, Scene creator etc)
 
 
