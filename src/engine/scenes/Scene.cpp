@@ -1,11 +1,17 @@
 ﻿#include "Scene.h"
 #include "engine/GameEngine.h"
-#include "engine/actions/Action.h"
+#include "engine/input/InputManager.h"
+#include "engine/input/actions/Action.h"
 #include <SFML/Window/Keyboard.hpp>
+#include <string>
 
-Scene::Scene(GameEngine *gameEngine, std::unique_ptr<IRenderingSystem> renderingSystem = nullptr)
+Scene::Scene(GameEngine *gameEngine, std::unique_ptr<IRenderingSystem> renderingSystem)
     : gameEngine_(gameEngine), renderingSystem_(renderingSystem ? std::move(renderingSystem) : std::make_unique<DefaultRenderingSystem>()) {
-    registerAction(InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::F3), "Toggle_Debug_UI");
+    InputManager::getInstance().registerAction(this, InputDevice::Keyboard, static_cast<int>(sf::Keyboard::Key::F3), "Toggle_Debug_UI");
+}
+
+void Scene::registerAction(InputDevice device, int code, const std::string& actionName) {
+    InputManager::getInstance().registerAction(this, device, code, actionName);
 }
 
 void Scene::doAction(const Action &action) {
@@ -15,7 +21,3 @@ void Scene::doAction(const Action &action) {
 
     sDoAction(action);
 }
-
-void Scene::registerAction(InputDevice device, int code, const std::string &actionName) { actionMap_[{device, code}] = actionName; }
-
-ActionMap &Scene::getActionMap() { return actionMap_; }

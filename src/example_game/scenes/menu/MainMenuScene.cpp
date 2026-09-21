@@ -2,7 +2,6 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <iostream>
 #include "SFML/Graphics/Color.hpp"
-#include "engine/actions/Action.h"
 #include "engine/entities/PrefabEntityLoader.h"
 #include "example_game/scenes/Gameplay/ScenePlay.h"
 #include "engine/components/rendering/CSprite.h"

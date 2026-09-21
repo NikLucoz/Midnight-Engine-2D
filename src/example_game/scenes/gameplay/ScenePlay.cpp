@@ -2,7 +2,6 @@
 
 #include <imgui.h>
 #include <SFML/Graphics.hpp>
-#include "engine/actions/Action.h"
 #include "engine/components/collision/CBoundingBox.h"
 #include "engine/components/collision/CCircleCollider.h"
 #include "engine/components/rendering/CRenderable.h"

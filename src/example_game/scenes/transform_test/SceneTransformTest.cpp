@@ -3,7 +3,6 @@
 #include <SFML/Window/Keyboard.hpp>
 
 #include "engine/GameEngine.h"
-#include "engine/actions/Action.h"
 #include "engine/components/CTransform.h"
 #include "engine/components/rendering/CShape.h"
 #include "engine/entities/EntityManager.h"

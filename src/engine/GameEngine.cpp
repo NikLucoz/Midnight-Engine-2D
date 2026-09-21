@@ -3,7 +3,8 @@
 #include <algorithm>
 #include <iostream>
 
-#include "engine/actions/Action.h"
+#include "engine/input/InputManager.h"
+#include "engine/input/actions/Action.h"
 #include "engine/camera/Camera.h"
 #include "engine/scenes/Scene.h"
 #include "engine/utils/assets/AssetsLoader.h"
@@ -110,54 +111,8 @@ void GameEngine::handleEvents() {
             handleResize(resized->size.x, resized->size.y);
         }
 
-        if (const auto *keyPressed = event->getIf<sf::Event::KeyPressed>()) {
-            if (keyPressed->code == sf::Keyboard::Key::F3 || !debugUI_.WantsKeyboardInput()) {
-                handleUserKeyboardInputEvent(keyPressed->code, "pressed");
-            }
-        }
-
-        if (const auto *keyReleased = event->getIf<sf::Event::KeyReleased>()) {
-            if (keyReleased->code != sf::Keyboard::Key::F3 && !debugUI_.WantsKeyboardInput()) {
-                handleUserKeyboardInputEvent(keyReleased->code, "released");
-            }
-        }
-
-        if (const auto *mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()) {
-            if (!debugUI_.WantsMouseInput()) {
-                handleUserMouseInputEvent(mouseButtonPressed->button, "pressed", Vector2<int>(mouseButtonPressed->position.x, mouseButtonPressed->position.y));
-            }
-        }
-
-        if (const auto *mouseButtonReleased = event->getIf<sf::Event::MouseButtonReleased>()) {
-            if (!debugUI_.WantsMouseInput()) {
-                handleUserMouseInputEvent(mouseButtonReleased->button, "released", Vector2<int>(mouseButtonReleased->position.x, mouseButtonReleased->position.y));
-            }
-        }
+        InputManager::getInstance().processEvent(event, getCurrentScene(), debugUI_);
     }
-}
-
-void GameEngine::handleUserKeyboardInputEvent(sf::Keyboard::Key keyCode, const std::string &actionType) {
-    const InputBinding binding{InputDevice::Keyboard, static_cast<int>(keyCode)};
-
-    auto &actionMap = getCurrentScene()->getActionMap();
-    auto action = actionMap.find(binding);
-
-    if (action == actionMap.end())
-        return;
-
-    getCurrentScene()->doAction(Action(action->second, actionType));
-}
-
-void GameEngine::handleUserMouseInputEvent(sf::Mouse::Button button, const std::string &actionType, const Vector2<int> pos) {
-    const InputBinding binding{InputDevice::MouseButton, static_cast<int>(button)};
-
-    auto &actionMap = getCurrentScene()->getActionMap();
-    auto action = actionMap.find(binding);
-
-    if (action == actionMap.end())
-        return;
-
-    getCurrentScene()->doAction(Action(action->second, actionType, pos));
 }
 
 void GameEngine::changeScene(const std::string &sceneName) {
